@@ -1,0 +1,18 @@
+{
+  "name": "@wortise/react-native-sdk",
+  "version": "1.0.0-beta.6",
+  "description": "Wortise SDK for React Native",
+  "author": "Wortise",
+  "main": "index.js",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wortise",
+    "react-native"
+  ],
+  "peerDependencies": {
+    "react-native": "^0.41.2"
+  }
+}
