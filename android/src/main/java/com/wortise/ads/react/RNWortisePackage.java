@@ -20,6 +20,7 @@ public class RNWortisePackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       return Arrays.<NativeModule>asList(
         new RNWortiseConsentManagerModule(reactContext),
+        new RNWortiseDataManagerModule   (reactContext),
         new RNWortiseInterstitialAdModule(reactContext),
         new RNWortiseSdkModule           (reactContext)
       );
@@ -27,6 +28,8 @@ public class RNWortisePackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-      return Collections.emptyList();
+      return Arrays.<ViewManager>asList(
+        new WortiseBannerManager()
+      );
     }
 }

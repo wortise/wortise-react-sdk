@@ -23,18 +23,18 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public boolean canCollectData() {
-    return ConsentManager.canCollectData(getReactApplicationContext());
+  public void canCollectData(Promise promise) {
+    promise.resolve(ConsentManager.canCollectData(getReactApplicationContext()));
   }
 
   @ReactMethod
-  public Boolean isGranted() {
-    return ConsentManager.isGranted(getReactApplicationContext());
+  public void isGranted(Promise promise) {
+    promise.resolve(isGranted());
   }
 
   @ReactMethod
-  public Boolean isReplied() {
-    return ConsentManager.isReplied(getReactApplicationContext());
+  public void isReplied(Promise promise) {
+    promise.resolve(isReplied());
   }
 
   @ReactMethod
@@ -68,5 +68,14 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void set(boolean granted) {
     ConsentManager.set(getReactApplicationContext(), granted);
+  }
+
+
+  private boolean isGranted() {
+    return ConsentManager.isGranted(getReactApplicationContext());
+  }
+
+  private boolean isReplied() {
+    return ConsentManager.isReplied(getReactApplicationContext());
   }
 }

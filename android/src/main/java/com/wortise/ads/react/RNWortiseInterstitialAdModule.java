@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -45,8 +46,8 @@ public class RNWortiseInterstitialAdModule extends ReactContextBaseJavaModule im
   }
 
   @ReactMethod
-  public boolean isAvailable() {
-    return (mInterstitialAd != null) && mInterstitialAd.isAvailable();
+  public void isAvailable(Promise promise) {
+    promise.resolve((mInterstitialAd != null) && mInterstitialAd.isAvailable());
   }
 
   @ReactMethod
@@ -73,12 +74,8 @@ public class RNWortiseInterstitialAdModule extends ReactContextBaseJavaModule im
   }
 
   @ReactMethod
-  public boolean showAd() {
-    if (mInterstitialAd == null) {
-      return false;
-    }
-
-    return mInterstitialAd.showAd();
+  public void showAd(Promise promise) {
+    promise.resolve((mInterstitialAd != null) && mInterstitialAd.showAd());
   }
 
 

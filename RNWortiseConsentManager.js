@@ -1,9 +1,8 @@
-import { NativeModules } from 'react-native';
+import { NativeModules } from "react-native";
 
 const { RNWortiseConsentManager } = NativeModules;
 
 export default {
-
   get canCollectData() {
     return RNWortiseConsentManager.canCollectData();
   },
@@ -16,16 +15,15 @@ export default {
     return RNWortiseConsentManager.isReplied();
   },
 
-
   request(withOptOut) {
     return RNWortiseConsentManager.request(withOptOut ?? false);
   },
-  
+
   requestOnce(withOptOut) {
     return RNWortiseConsentManager.requestOnce(withOptOut ?? false);
   },
 
   set(granted) {
     RNWortiseConsentManager.set(granted);
-  }
-}; 
+  },
+};

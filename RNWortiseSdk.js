@@ -1,9 +1,8 @@
-import { NativeModules } from 'react-native';
+import { NativeModules } from "react-native";
 
 const { RNWortiseSdk } = NativeModules;
 
 export default {
-
   get isInitialized() {
     return RNWortiseSdk.isInitialized();
   },
@@ -16,11 +15,10 @@ export default {
     return RNWortiseSdk.getVersion();
   },
 
-
   initialize(assetKey, start) {
     return RNWortiseSdk.initialize(assetKey, start ?? true);
   },
-  
+
   start() {
     RNWortiseSdk.start();
   },
@@ -31,5 +29,5 @@ export default {
 
   wait() {
     return RNWortiseSdk.wait();
-  }
-}; 
+  },
+};

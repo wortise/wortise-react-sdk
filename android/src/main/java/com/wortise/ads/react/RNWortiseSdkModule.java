@@ -34,18 +34,18 @@ public class RNWortiseSdkModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public String getVersion() {
-    return WortiseSdk.getVersion();
+  public void getVersion(Promise promise) {
+    promise.resolve(WortiseSdk.getVersion());
   }
 
   @ReactMethod
-  public boolean isInitialized() {
-    return WortiseSdk.isInitialized();
+  public void isInitialized(Promise promise) {
+    promise.resolve(WortiseSdk.isInitialized());
   }
 
   @ReactMethod
-  public boolean isReady() {
-    return WortiseSdk.isReady();
+  public void isReady(Promise promise) {
+    promise.resolve(WortiseSdk.isReady());
   }
 
   @ReactMethod
