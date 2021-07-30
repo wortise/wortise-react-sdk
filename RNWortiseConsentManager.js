@@ -26,4 +26,8 @@ export default {
   set(granted) {
     RNWortiseConsentManager.set(granted);
   },
+
+  setIabString(value) {
+    RNWortiseConsentManager.setIabString(value);
+  },
 };

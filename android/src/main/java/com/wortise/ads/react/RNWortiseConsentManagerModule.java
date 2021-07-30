@@ -70,6 +70,11 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
     ConsentManager.set(getReactApplicationContext(), granted);
   }
 
+  @ReactMethod
+  public void setIabString(String value) {
+    ConsentManager.setIabString(getReactApplicationContext(), value);
+  }
+
 
   private boolean isGranted() {
     return ConsentManager.isGranted(getReactApplicationContext());
