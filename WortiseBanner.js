@@ -3,8 +3,6 @@ import {
   findNodeHandle,
   requireNativeComponent,
   UIManager,
-  View,
-  StyleSheet,
   ViewPropTypes,
 } from "react-native";
 import PropTypes from "prop-types";
