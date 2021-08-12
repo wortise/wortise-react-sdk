@@ -12,51 +12,53 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.wortise.ads.AdError;
-import com.wortise.ads.interstitial.InterstitialAd;
+import com.wortise.ads.rewarded.RewardedAd;
+import com.wortise.ads.rewarded.models.Reward;
 
-public class RNWortiseInterstitialAdModule extends ReactContextBaseJavaModule implements InterstitialAd.Listener, LifecycleEventListener {
+public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implements RewardedAd.Listener, LifecycleEventListener {
 
   public static final String EVENT_CLICKED   = "onClicked";
+  public static final String EVENT_COMPLETED = "onCompleted";
   public static final String EVENT_DISMISSED = "onDismissed";
   public static final String EVENT_FAILED    = "onFailed";
   public static final String EVENT_LOADED    = "onLoaded";
   public static final String EVENT_SHOWN     = "onShown";
 
 
-  private InterstitialAd mInterstitialAd;
+  private RewardedAd mRewardedAd;
 
 
-  public RNWortiseInterstitialAdModule(ReactApplicationContext reactContext) {
+  public RNWortiseRewardedModule(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 
   @Override
   public String getName() {
-    return "RNWortiseInterstitial";
+    return "RNWortiseRewarded";
   }
 
   @ReactMethod
   public void destroy() {
-    if (mInterstitialAd == null) {
+    if (mRewardedAd == null) {
       return;
     }
 
-    mInterstitialAd.destroy();
-    mInterstitialAd = null;
+    mRewardedAd.destroy();
+    mRewardedAd = null;
   }
 
   @ReactMethod
   public void isAvailable(Promise promise) {
-    promise.resolve((mInterstitialAd != null) && mInterstitialAd.isAvailable());
+    promise.resolve((mRewardedAd != null) && mRewardedAd.isAvailable());
   }
 
   @ReactMethod
   public void loadAd() {
-    if (mInterstitialAd == null) {
+    if (mRewardedAd == null) {
       return;
     }
 
-    mInterstitialAd.loadAd();
+    mRewardedAd.loadAd();
   }
 
   @ReactMethod
@@ -69,13 +71,13 @@ public class RNWortiseInterstitialAdModule extends ReactContextBaseJavaModule im
 
     destroy();
 
-    mInterstitialAd = new InterstitialAd(currentActivity, adUnitId);
-    mInterstitialAd.setListener(this);
+    mRewardedAd = new RewardedAd(currentActivity, adUnitId);
+    mRewardedAd.setListener(this);
   }
 
   @ReactMethod
   public void showAd(Promise promise) {
-    promise.resolve((mInterstitialAd != null) && mInterstitialAd.showAd());
+    promise.resolve((mRewardedAd != null) && mRewardedAd.showAd());
   }
 
 
@@ -98,17 +100,28 @@ public class RNWortiseInterstitialAdModule extends ReactContextBaseJavaModule im
   }
 
   @Override
-  public void onInterstitialClicked(InterstitialAd ad) {
+  public void onRewardedClicked(RewardedAd ad) {
     sendEvent(EVENT_CLICKED, null);
   }
 
   @Override
-  public void onInterstitialDismissed(InterstitialAd ad) {
+  public void onRewardedCompleted(RewardedAd ad, Reward reward) {
+    WritableMap event = Arguments.createMap();
+
+    event.putInt    ("amount",  reward.getAmount());
+    event.putString ("label",   reward.getLabel());
+    event.putBoolean("success", reward.getSuccess());
+
+    sendEvent(EVENT_COMPLETED, event);
+  }
+
+  @Override
+  public void onRewardedDismissed(RewardedAd ad) {
     sendEvent(EVENT_DISMISSED, null);
   }
 
   @Override
-  public void onInterstitialFailed(InterstitialAd ad, AdError error) {
+  public void onRewardedFailed(RewardedAd ad, AdError error) {
     WritableMap event = Arguments.createMap();
 
     event.putString("message", error.toString());
@@ -118,12 +131,12 @@ public class RNWortiseInterstitialAdModule extends ReactContextBaseJavaModule im
   }
 
   @Override
-  public void onInterstitialLoaded(InterstitialAd ad) {
+  public void onRewardedLoaded(RewardedAd ad) {
     sendEvent(EVENT_LOADED, null);
   }
 
   @Override
-  public void onInterstitialShown(InterstitialAd ad) {
+  public void onRewardedShown(RewardedAd ad) {
     sendEvent(EVENT_SHOWN, null);
   }
 }

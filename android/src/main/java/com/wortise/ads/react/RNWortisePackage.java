@@ -21,7 +21,8 @@ public class RNWortisePackage implements ReactPackage {
       return Arrays.<NativeModule>asList(
         new RNWortiseConsentManagerModule(reactContext),
         new RNWortiseDataManagerModule   (reactContext),
-        new RNWortiseInterstitialAdModule(reactContext),
+        new RNWortiseInterstitialModule  (reactContext),
+        new RNWortiseRewardedModule      (reactContext),
         new RNWortiseSdkModule           (reactContext)
       );
     }
