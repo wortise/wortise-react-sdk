@@ -16,11 +16,11 @@ import com.wortise.ads.interstitial.InterstitialAd;
 
 public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule implements InterstitialAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED   = "onClicked";
-  public static final String EVENT_DISMISSED = "onDismissed";
-  public static final String EVENT_FAILED    = "onFailed";
-  public static final String EVENT_LOADED    = "onLoaded";
-  public static final String EVENT_SHOWN     = "onShown";
+  public static final String EVENT_CLICKED   = "onInterstitialClicked";
+  public static final String EVENT_DISMISSED = "onInterstitialDismissed";
+  public static final String EVENT_FAILED    = "onInterstitialFailed";
+  public static final String EVENT_LOADED    = "onInterstitialLoaded";
+  public static final String EVENT_SHOWN     = "onInterstitialShown";
 
 
   private InterstitialAd mInterstitialAd;

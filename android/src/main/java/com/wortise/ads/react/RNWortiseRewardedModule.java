@@ -17,12 +17,12 @@ import com.wortise.ads.rewarded.models.Reward;
 
 public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implements RewardedAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED   = "onClicked";
-  public static final String EVENT_COMPLETED = "onCompleted";
-  public static final String EVENT_DISMISSED = "onDismissed";
-  public static final String EVENT_FAILED    = "onFailed";
-  public static final String EVENT_LOADED    = "onLoaded";
-  public static final String EVENT_SHOWN     = "onShown";
+  public static final String EVENT_CLICKED   = "onRewardedClicked";
+  public static final String EVENT_COMPLETED = "onRewardedCompleted";
+  public static final String EVENT_DISMISSED = "onRewardedDismissed";
+  public static final String EVENT_FAILED    = "onRewardedFailed";
+  public static final String EVENT_LOADED    = "onRewardedLoaded";
+  public static final String EVENT_SHOWN     = "onRewardedShown";
 
 
   private RewardedAd mRewardedAd;
