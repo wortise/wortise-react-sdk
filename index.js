@@ -1,3 +1,7 @@
+export { default as RNWortiseAdContentRating } from "./RNWortiseAdContentRating";
+
+export { default as RNWortiseAdSettings } from "./RNWortiseAdSettings";
+
 export { default as RNWortiseAdSize } from "./RNWortiseAdSize";
 
 export { default as RNWortiseConsentManager } from "./RNWortiseConsentManager";
