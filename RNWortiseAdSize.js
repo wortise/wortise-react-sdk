@@ -29,8 +29,8 @@ class AdSize {
     return new AdSize(width, -1, "anchored");
   }
 
-  static getInlineAdaptiveBannerAdSize(width) {
-    return new AdSize(width, -1, "inline");
+  static getInlineAdaptiveBannerAdSize(width, maxHeight) {
+    return new AdSize(width, maxHeight, "inline");
   }
 }
 

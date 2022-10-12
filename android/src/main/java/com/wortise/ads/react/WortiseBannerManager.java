@@ -74,7 +74,7 @@ public class WortiseBannerManager extends SimpleViewManager<RNWortiseBanner> {
 
     switch (type) {
     case "anchored":
-      return AdSize.getInlineAdaptiveBannerAdSize(context, width);
+      return AdSize.getAnchoredAdaptiveBannerAdSize(context, width);
 
     case "inline":
       return AdSize.getInlineAdaptiveBannerAdSize(context, width, height);
