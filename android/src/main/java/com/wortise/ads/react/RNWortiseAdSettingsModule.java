@@ -37,6 +37,11 @@ public class RNWortiseAdSettingsModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getUserId(Promise promise) {
+    promise.resolve(AdSettings.getUserId(getReactApplicationContext()));
+  }
+
+  @ReactMethod
   public void isChildDirected(Promise promise) {
     promise.resolve(AdSettings.isChildDirected(getReactApplicationContext()));
   }
@@ -57,5 +62,10 @@ public class RNWortiseAdSettingsModule extends ReactContextBaseJavaModule {
     }
 
     AdSettings.setMaxAdContentRating(getReactApplicationContext(), value);
+  }
+
+  @ReactMethod
+  public void setUserId(String userId) {
+    AdSettings.setUserId(getReactApplicationContext(), userId);
   }
 }

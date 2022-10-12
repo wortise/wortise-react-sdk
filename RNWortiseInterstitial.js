@@ -9,6 +9,10 @@ export default {
     return RNWortiseInterstitial.isAvailable();
   },
 
+  get isShowing() {
+    return RNWortiseInterstitial.isShowing();
+  },
+
   addEventListener(eventType, handler) {
     emitter.addListener(eventType, handler);
   },

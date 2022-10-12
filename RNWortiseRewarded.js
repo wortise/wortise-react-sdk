@@ -9,6 +9,10 @@ export default {
     return RNWortiseRewarded.isAvailable();
   },
 
+  get isShowing() {
+    return RNWortiseRewarded.isShowing();
+  },
+
   addEventListener(eventType, handler) {
     emitter.addListener(eventType, handler);
   },

@@ -53,6 +53,11 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
   }
 
   @ReactMethod
+  public void isShowing(Promise promise) {
+    promise.resolve((mRewardedAd != null) && mRewardedAd.isShowing());
+  }
+
+  @ReactMethod
   public void loadAd() {
     if (mRewardedAd == null) {
       return;

@@ -55,7 +55,7 @@ class WortiseBanner extends Component {
 WortiseBanner.propTypes = {
   ...ViewPropTypes,
 
-  adSize: PropTypes.string,
+  adSize: PropTypes.object,
   adUnitId: PropTypes.string.isRequired,
   autoRefreshTime: PropTypes.number,
 

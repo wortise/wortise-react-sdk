@@ -1,7 +1,37 @@
-export default {
-  HEIGHT_50: "HEIGHT_50",
-  HEIGHT_50: "HEIGHT_90",
-  HEIGHT_250: "HEIGHT_250",
-  HEIGHT_280: "HEIGHT_280",
-  MATCH_VIEW: "MATCH_VIEW",
-};
+class AdSize {
+  constructor(width, height, type) {
+    this.height = height ?? -1;
+    this.width = width ?? -1;
+    this.type = type ?? "normal";
+  }
+
+  static get HEIGHT_50() {
+    return new AdSize(-1, 50);
+  }
+
+  static get HEIGHT_90() {
+    return new AdSize(-1, 90);
+  }
+
+  static get HEIGHT_250() {
+    return new AdSize(-1, 250);
+  }
+
+  static get HEIGHT_280() {
+    return new AdSize(-1, 280);
+  }
+
+  static get MATCH_VIEW() {
+    return new AdSize(-1, -1);
+  }
+
+  static getAnchoredAdaptiveBannerAdSize(width) {
+    return new AdSize(width, -1, "anchored");
+  }
+
+  static getInlineAdaptiveBannerAdSize(width) {
+    return new AdSize(width, -1, "inline");
+  }
+}
+
+export default AdSize;

@@ -20,6 +20,7 @@ public class RNWortisePackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       return Arrays.<NativeModule>asList(
         new RNWortiseAdSettingsModule    (reactContext),
+        new RNWortiseAppOpenModule       (reactContext),
         new RNWortiseConsentManagerModule(reactContext),
         new RNWortiseDataManagerModule   (reactContext),
         new RNWortiseInterstitialModule  (reactContext),

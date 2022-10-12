@@ -51,6 +51,11 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
   }
 
   @ReactMethod
+  public void isShowing(Promise promise) {
+    promise.resolve((mInterstitialAd != null) && mInterstitialAd.isShowing());
+  }
+
+  @ReactMethod
   public void loadAd() {
     if (mInterstitialAd == null) {
       return;

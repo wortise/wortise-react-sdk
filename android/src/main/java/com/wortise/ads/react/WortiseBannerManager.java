@@ -1,6 +1,9 @@
 package com.wortise.ads.react;
 
+import android.content.Context;
+
 import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -63,9 +66,34 @@ public class WortiseBannerManager extends SimpleViewManager<RNWortiseBanner> {
   }
 
 
+  private AdSize getAdSize(Context context, ReadableMap adSize) {
+    int height = adSize.getInt("height");
+    int width  = adSize.getInt("width");
+
+    String type = adSize.getString("type");
+
+    switch (type) {
+    case "anchored":
+      return AdSize.getInlineAdaptiveBannerAdSize(context, width);
+
+    case "inline":
+      return AdSize.getInlineAdaptiveBannerAdSize(context, width, height);
+
+    default:
+      return new AdSize(width, height);
+    }
+  }
+
+  
   @ReactProp(name = "adSize")
-  public void setAdSize(RNWortiseBanner view, String adSize) {
-    view.setAdSize(AdSize.valueOf(adSize));
+  public void setAdSize(RNWortiseBanner view, ReadableMap adSize) {
+    if (adSize == null) {
+      return;
+    }
+
+    AdSize size = getAdSize(view.getContext(), adSize);
+
+    view.setAdSize(size);
   }
 
   @ReactProp(name = "adUnitId")

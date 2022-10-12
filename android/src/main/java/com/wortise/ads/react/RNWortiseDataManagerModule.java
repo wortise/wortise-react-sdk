@@ -52,19 +52,6 @@ public class RNWortiseDataManagerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void requestAccount(boolean onlyIfNotAvailable, Promise promise) {
-    boolean result = false;
-
-    Activity currentActivity = getCurrentActivity();
-
-    if (currentActivity != null) {
-      result = DataManager.requestAccount(currentActivity, onlyIfNotAvailable);
-    }
-
-    promise.resolve(result);
-  }
-
-  @ReactMethod
   public void setAge(int age) {
     DataManager.setAge(getReactApplicationContext(), age);
   }
