@@ -14,9 +14,6 @@
     "wortise",
     "react-native"
   ],
-  "peerDependencies": {
-    "react-native": "^0.52.0"
-  },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
     "eslint": "^7.9.0",
@@ -25,7 +22,8 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-native": "^3.9.1",
     "husky": "^4.3.0",
-    "prettier": "^2.1.2"
+    "prettier": "^2.1.2",
+    "react-native": "^0.52.0"
   },
   "husky": {
     "hooks": {
