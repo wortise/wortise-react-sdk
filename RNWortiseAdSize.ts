@@ -1,8 +1,12 @@
 class AdSize {
-  constructor(width, height, type) {
+  height: number;
+  type: string;
+  width: number;
+
+  constructor(width?: number, height?: number, type?: string) {
     this.height = height ?? -1;
     this.width = width ?? -1;
-    this.type = type ?? "normal";
+    this.type = type ?? 'normal';
   }
 
   static get HEIGHT_50() {
@@ -25,12 +29,12 @@ class AdSize {
     return new AdSize(-1, -1);
   }
 
-  static getAnchoredAdaptiveBannerAdSize(width) {
-    return new AdSize(width, -1, "anchored");
+  static getAnchoredAdaptiveBannerAdSize(width: number) {
+    return new AdSize(width, -1, 'anchored');
   }
 
-  static getInlineAdaptiveBannerAdSize(width, maxHeight) {
-    return new AdSize(width, maxHeight, "inline");
+  static getInlineAdaptiveBannerAdSize(width: number, maxHeight?: number) {
+    return new AdSize(width, maxHeight, 'inline');
   }
 }
 

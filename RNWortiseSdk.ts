@@ -1,4 +1,4 @@
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
 
 const { RNWortiseSdk } = NativeModules;
 
@@ -15,7 +15,7 @@ export default {
     return RNWortiseSdk.getVersion();
   },
 
-  initialize(assetKey, start) {
+  initialize(assetKey: string, start?: boolean) {
     return RNWortiseSdk.initialize(assetKey, start ?? true);
   },
 

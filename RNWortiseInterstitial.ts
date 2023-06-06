@@ -1,4 +1,4 @@
-import { NativeEventEmitter, NativeModules } from "react-native";
+import { NativeEventEmitter, NativeModules } from 'react-native';
 
 const { RNWortiseInterstitial } = NativeModules;
 
@@ -13,7 +13,7 @@ export default {
     return RNWortiseInterstitial.isShowing();
   },
 
-  addEventListener(eventType, handler) {
+  addEventListener(eventType: string, handler: (event: object) => void) {
     emitter.addListener(eventType, handler);
   },
 
@@ -25,11 +25,11 @@ export default {
     RNWortiseInterstitial.loadAd();
   },
 
-  removeAllListeners(eventType) {
+  removeAllListeners(eventType: string) {
     emitter.removeAllListeners(eventType);
   },
 
-  setAdUnitId(adUnitId) {
+  setAdUnitId(adUnitId: string) {
     RNWortiseInterstitial.setAdUnitId(adUnitId);
   },
 

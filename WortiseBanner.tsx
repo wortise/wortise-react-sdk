@@ -1,15 +1,21 @@
-import React, { Component } from "react";
-import {
-  findNodeHandle,
-  requireNativeComponent,
-  UIManager,
-} from "react-native";
-import PropTypes from "prop-types";
-import { ViewPropTypes } from "deprecated-react-native-prop-types";
+import React, { createRef } from 'react';
+import { findNodeHandle, requireNativeComponent, NativeMethods, UIManager } from 'react-native';
+import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
 
-class WortiseBanner extends Component {
-  constructor() {
-    super();
+type WortiseBannerState = {
+  style: {
+    width?: number;
+    height?: number;
+  };
+};
+
+type WortiseBannerView = React.Component<WortiseBannerProps> & NativeMethods;
+
+class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerState> {
+  ref = createRef<WortiseBannerView>();
+
+  constructor(props: WortiseBannerProps) {
+    super(props);
 
     this.handleSizeChange = this.handleSizeChange.bind(this);
 
@@ -22,21 +28,21 @@ class WortiseBanner extends Component {
     this.loadAd();
   }
 
-  handleSizeChange(event) {
+  handleSizeChange(event: { nativeEvent: SizeChangeEvent }) {
     const { height, width } = event.nativeEvent;
 
     this.setState({ style: { height, width } });
 
     if (this.props.onSizeChange) {
-      this.props.onSizeChange(event.nativeEvent);
+      this.props.onSizeChange(event);
     }
   }
 
   loadAd() {
     UIManager.dispatchViewManagerCommand(
-      findNodeHandle(this._banner),
-      UIManager.getViewManagerConfig("RNWortiseBanner").Commands.loadAd,
-      null
+      findNodeHandle(this.ref.current),
+      UIManager.getViewManagerConfig('RNWortiseBanner').Commands.loadAd,
+      undefined,
     );
   }
 
@@ -45,29 +51,13 @@ class WortiseBanner extends Component {
       <RNWortiseBanner
         {...this.props}
         onSizeChange={this.handleSizeChange}
-        ref={(el) => (this._banner = el)}
+        ref={this.ref}
         style={[this.props.style, this.state.style]}
       />
     );
   }
 }
 
-WortiseBanner.propTypes = {
-  ...ViewPropTypes,
-
-  adSize: PropTypes.object,
-  adUnitId: PropTypes.string.isRequired,
-  autoRefreshTime: PropTypes.number,
-
-  onClicked: PropTypes.func,
-  onFailed: PropTypes.func,
-  onLoaded: PropTypes.func,
-  onSizeChange: PropTypes.func,
-};
-
-const RNWortiseBanner = requireNativeComponent(
-  "RNWortiseBanner",
-  WortiseBanner
-);
+const RNWortiseBanner = requireNativeComponent<WortiseBannerProps>('RNWortiseBanner');
 
 export default WortiseBanner;

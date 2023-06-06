@@ -1,4 +1,4 @@
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
 
 const { RNWortiseConsentManager } = NativeModules;
 
@@ -15,19 +15,19 @@ export default {
     return RNWortiseConsentManager.isReplied();
   },
 
-  request(withOptOut) {
+  request(withOptOut: boolean) {
     return RNWortiseConsentManager.request(withOptOut ?? false);
   },
 
-  requestOnce(withOptOut) {
+  requestOnce(withOptOut: boolean) {
     return RNWortiseConsentManager.requestOnce(withOptOut ?? false);
   },
 
-  set(granted) {
+  set(granted: boolean) {
     RNWortiseConsentManager.set(granted);
   },
 
-  setIabString(value) {
+  setIabString(value: string) {
     RNWortiseConsentManager.setIabString(value);
   },
 };

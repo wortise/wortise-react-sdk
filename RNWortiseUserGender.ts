@@ -1,4 +1,6 @@
-export default {
-  FEMALE: "FEMALE",
-  MALE: "MALE",
-};
+enum RNWortiseUserGender {
+  FEMALE = 'FEMALE',
+  MALE = 'MALE',
+}
+
+export default RNWortiseUserGender;

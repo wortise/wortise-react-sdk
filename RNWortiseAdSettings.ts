@@ -1,4 +1,5 @@
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
+import RNWortiseAdContentRating from './RNWortiseAdContentRating';
 
 const { RNWortiseAdSettings } = NativeModules;
 
@@ -19,15 +20,15 @@ export default {
     return RNWortiseAdSettings.getUserId();
   },
 
-  setChildDirected(enabled) {
+  setChildDirected(enabled: boolean) {
     RNWortiseAdSettings.setChildDirected(enabled);
   },
 
-  setMaxAdContentRating(rating) {
+  setMaxAdContentRating(rating?: RNWortiseAdContentRating) {
     RNWortiseAdSettings.setMaxAdContentRating(rating);
   },
 
-  setUserId(userId) {
+  setUserId(userId?: string) {
     RNWortiseAdSettings.setUserId(userId);
   },
 };

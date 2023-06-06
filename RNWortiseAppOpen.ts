@@ -1,12 +1,12 @@
-import { NativeEventEmitter, NativeModules } from "react-native";
+import { NativeEventEmitter, NativeModules } from 'react-native';
 
 const { RNWortiseAppOpen } = NativeModules;
 
 const emitter = new NativeEventEmitter(RNWortiseAppOpen);
 
 const Orientation = {
-  LANDSCAPE: "LANDSCAPE",
-  PORTRAIT: "PORTRAIT",
+  LANDSCAPE: 'LANDSCAPE',
+  PORTRAIT: 'PORTRAIT',
 };
 
 export default {
@@ -20,7 +20,7 @@ export default {
     return RNWortiseAppOpen.isShowing();
   },
 
-  addEventListener(eventType, handler) {
+  addEventListener(eventType: string, handler: (event: object) => void) {
     emitter.addListener(eventType, handler);
   },
 
@@ -32,19 +32,19 @@ export default {
     RNWortiseAppOpen.loadAd();
   },
 
-  removeAllListeners(eventType) {
+  removeAllListeners(eventType: string) {
     emitter.removeAllListeners(eventType);
   },
 
-  setAdUnitId(adUnitId) {
+  setAdUnitId(adUnitId: string) {
     RNWortiseAppOpen.setAdUnitId(adUnitId);
   },
 
-  setAutoReload(autoReload) {
+  setAutoReload(autoReload: boolean) {
     RNWortiseAppOpen.setAutoReload(autoReload);
   },
 
-  setOrientation(orientation) {
+  setOrientation(orientation: string) {
     RNWortiseAppOpen.setOrientation(orientation);
   },
 

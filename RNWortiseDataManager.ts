@@ -1,4 +1,5 @@
-import { NativeModules } from "react-native";
+import { NativeModules } from 'react-native';
+import RNWortiseUserGender from './RNWortiseUserGender';
 
 const { RNWortiseDataManager } = NativeModules;
 
@@ -15,23 +16,19 @@ export default {
     return RNWortiseDataManager.getGender();
   },
 
-  addEmail(email) {
+  addEmail(email: string) {
     RNWortiseDataManager.addEmail(email);
   },
 
-  requestAccount(onlyIfNotAvailable) {
-    return RNWortiseDataManager.requestAccount(onlyIfNotAvailable ?? true);
-  },
-
-  setAge(age) {
+  setAge(age?: number) {
     RNWortiseDataManager.setAge(age);
   },
 
-  setEmails(list) {
+  setEmails(list?: [string]) {
     RNWortiseDataManager.setEmails(list);
   },
 
-  setGender(gender) {
+  setGender(gender?: RNWortiseUserGender) {
     RNWortiseDataManager.setGender(gender);
   },
 };
