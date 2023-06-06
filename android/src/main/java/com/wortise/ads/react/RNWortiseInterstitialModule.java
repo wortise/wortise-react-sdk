@@ -36,6 +36,10 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
   }
 
   @ReactMethod
+  public void addListener(String eventName) {
+  }
+
+  @ReactMethod
   public void destroy() {
     if (mInterstitialAd == null) {
       return;
@@ -62,6 +66,10 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
     }
 
     mInterstitialAd.loadAd();
+  }
+
+  @ReactMethod
+  public void removeListeners(Integer count) {
   }
 
   @ReactMethod

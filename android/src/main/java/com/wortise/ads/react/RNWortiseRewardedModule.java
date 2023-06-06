@@ -38,6 +38,10 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
   }
 
   @ReactMethod
+  public void addListener(String eventName) {
+  }
+
+  @ReactMethod
   public void destroy() {
     if (mRewardedAd == null) {
       return;
@@ -64,6 +68,10 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
     }
 
     mRewardedAd.loadAd();
+  }
+
+  @ReactMethod
+  public void removeListeners(Integer count) {
   }
 
   @ReactMethod

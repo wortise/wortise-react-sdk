@@ -37,6 +37,10 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
   }
 
   @ReactMethod
+  public void addListener(String eventName) {
+  }
+
+  @ReactMethod
   public void destroy() {
     if (mAppOpenAd == null) {
       return;
@@ -63,6 +67,10 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
     }
 
     mAppOpenAd.loadAd();
+  }
+
+  @ReactMethod
+  public void removeListeners(Integer count) {
   }
 
   @ReactMethod
