@@ -117,24 +117,30 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
   public void showAd(Promise promise) {
     Activity currentActivity = getCurrentActivity();
 
-    if (currentActivity == null || mAppOpenAd == null) {
+    if (mAppOpenAd == null) {
         promise.resolve(false);
         return;
     }
 
-    promise.resolve(mAppOpenAd.showAd(currentActivity));
+    boolean result = (currentActivity != null)
+      ? mAppOpenAd.showAd(currentActivity)
+      : mAppOpenAd.showAd();
+
+    promise.resolve(result);
   }
 
   @ReactMethod
   public void tryToShowAd(Promise promise) {
     Activity currentActivity = getCurrentActivity();
 
-    if (currentActivity == null || mAppOpenAd == null) {
+    if (mAppOpenAd == null) {
         promise.resolve(false);
         return;
     }
 
-    promise.resolve(mAppOpenAd.tryToShowAd(currentActivity));
+    boolean result = mAppOpenAd.tryToShowAd(currentActivity);
+
+    promise.resolve(result);
   }
 
 

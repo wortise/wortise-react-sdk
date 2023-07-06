@@ -90,7 +90,18 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
 
   @ReactMethod
   public void showAd(Promise promise) {
-    promise.resolve((mRewardedAd != null) && mRewardedAd.showAd());
+    Activity currentActivity = getCurrentActivity();
+
+    if (mRewardedAd == null) {
+        promise.resolve(false);
+        return;
+    }
+
+    boolean result = (currentActivity != null)
+      ? mRewardedAd.showAd(currentActivity)
+      : mRewardedAd.showAd();
+
+    promise.resolve(result);
   }
 
 

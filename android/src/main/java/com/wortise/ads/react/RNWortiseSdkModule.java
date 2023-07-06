@@ -22,12 +22,7 @@ public class RNWortiseSdkModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void initialize(String assetKey, Promise promise) {
-    initialize(assetKey, true, promise);
-  }
-
-  @ReactMethod
-  public void initialize(String assetKey, boolean start, Promise promise) {
-    WortiseSdk.initialize(getReactApplicationContext(), assetKey, start, () -> {
+    WortiseSdk.initialize(getReactApplicationContext(), assetKey, () -> {
       promise.resolve(null);
       return Unit.INSTANCE;
     });
@@ -46,16 +41,6 @@ public class RNWortiseSdkModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void isReady(Promise promise) {
     promise.resolve(WortiseSdk.isReady());
-  }
-
-  @ReactMethod
-  public void start() {
-    WortiseSdk.start(getReactApplicationContext());
-  }
-
-  @ReactMethod
-  public void stop() {
-    WortiseSdk.stop(getReactApplicationContext());
   }
 
   @ReactMethod

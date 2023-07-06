@@ -15,16 +15,8 @@ export default {
     return RNWortiseSdk.getVersion();
   },
 
-  initialize(assetKey: string, start?: boolean) {
-    return RNWortiseSdk.initialize(assetKey, start ?? true);
-  },
-
-  start() {
-    RNWortiseSdk.start();
-  },
-
-  stop() {
-    RNWortiseSdk.stop();
+  initialize(assetKey: string) {
+    return RNWortiseSdk.initialize(assetKey);
   },
 
   wait() {
