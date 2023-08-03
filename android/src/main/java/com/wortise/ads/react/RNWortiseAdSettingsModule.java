@@ -37,6 +37,11 @@ public class RNWortiseAdSettingsModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public boolean isTestEnabled() {
+    return AdSettings.isTestEnabled();
+  }
+
+  @ReactMethod
   public void getUserId(Promise promise) {
     promise.resolve(AdSettings.getUserId(getReactApplicationContext()));
   }
@@ -62,6 +67,11 @@ public class RNWortiseAdSettingsModule extends ReactContextBaseJavaModule {
     }
 
     AdSettings.setMaxAdContentRating(getReactApplicationContext(), value);
+  }
+
+  @ReactMethod
+  public void setTestEnabled(boolean enabled) {
+    AdSettings.setTestEnabled(enabled);
   }
 
   @ReactMethod

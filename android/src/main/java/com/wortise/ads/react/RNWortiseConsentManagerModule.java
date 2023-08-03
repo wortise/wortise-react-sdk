@@ -28,6 +28,11 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void canRequestPersonalizedAds(Promise promise) {
+    promise.resolve(ConsentManager.canRequestPersonalizedAds(getReactApplicationContext()));
+  }
+
+  @ReactMethod
   public void isGranted(Promise promise) {
     promise.resolve(isGranted());
   }
@@ -38,30 +43,47 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void request(boolean withOptOut, Promise promise) {
+  public void request(Promise promise) {
     Activity currentActivity = getCurrentActivity();
 
     if (currentActivity == null) {
-      promise.resolve(isGranted());
+      promise.resolve(false);
       return;
     }
 
-    ConsentManager.request(currentActivity, withOptOut, consent -> {
-      promise.resolve(consent);
+    ConsentManager.request(currentActivity, shown -> {
+      promise.resolve(shown);
+      return Unit.INSTANCE;
     });
   }
 
   @ReactMethod
-  public void requestOnce(boolean withOptOut, Promise promise) {
+  public void requestIfRequired(Promise promise) {
     Activity currentActivity = getCurrentActivity();
 
     if (currentActivity == null) {
-      promise.resolve(isGranted());
+      promise.resolve(false);
       return;
     }
 
-    ConsentManager.requestOnce(currentActivity, withOptOut, consent -> {
-      promise.resolve(consent);
+    ConsentManager.requestIfRequired(currentActivity, shown -> {
+      promise.resolve(shown);
+      return Unit.INSTANCE;
+    });
+  }
+
+  @ReactMethod
+  public void requestOnce(Promise promise) {
+    Activity currentActivity = getCurrentActivity();
+
+    if (currentActivity == null) {
+      promise.resolve(false);
+      return;
+    }
+
+    ConsentManager.requestOnce(currentActivity, shown -> {
+      promise.resolve(shown);
+      return Unit.INSTANCE;
     });
   }
 

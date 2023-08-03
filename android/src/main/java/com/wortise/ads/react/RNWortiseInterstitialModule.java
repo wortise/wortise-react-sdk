@@ -1,6 +1,8 @@
 package com.wortise.ads.react;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -16,12 +18,15 @@ import com.wortise.ads.interstitial.InterstitialAd;
 
 public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule implements InterstitialAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED   = "onInterstitialClicked";
-  public static final String EVENT_DISMISSED = "onInterstitialDismissed";
-  public static final String EVENT_FAILED    = "onInterstitialFailed";
-  public static final String EVENT_LOADED    = "onInterstitialLoaded";
-  public static final String EVENT_SHOWN     = "onInterstitialShown";
+  public static final String EVENT_CLICKED    = "onInterstitialClicked";
+  public static final String EVENT_DISMISSED  = "onInterstitialDismissed";
+  public static final String EVENT_FAILED     = "onInterstitialFailed";
+  public static final String EVENT_IMPRESSION = "onInterstitialImpression";
+  public static final String EVENT_LOADED     = "onInterstitialLoaded";
+  public static final String EVENT_SHOWN      = "onInterstitialShown";
 
+
+  private Handler mHandler = new Handler(Looper.getMainLooper());
 
   private InterstitialAd mInterstitialAd;
 
@@ -65,7 +70,7 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
       return;
     }
 
-    mInterstitialAd.loadAd();
+    mHandler.post(() -> mInterstitialAd.loadAd());
   }
 
   @ReactMethod
@@ -95,11 +100,14 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
         return;
     }
 
-    boolean result = (currentActivity != null)
-      ? mInterstitialAd.showAd(currentActivity)
-      : mInterstitialAd.showAd();
+    mHandler.post(() -> {
 
-    promise.resolve(result);
+      boolean result = (currentActivity != null)
+        ? mInterstitialAd.showAd(currentActivity)
+        : mInterstitialAd.showAd();
+
+      promise.resolve(result);
+    });
   }
 
 
@@ -139,6 +147,11 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
     event.putString("name",    error.name());
 
     sendEvent(EVENT_FAILED, event);
+  }
+
+  @Override
+  public void onInterstitialImpression(InterstitialAd ad) {
+    sendEvent(EVENT_IMPRESSION, null);
   }
 
   @Override

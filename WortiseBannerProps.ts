@@ -16,6 +16,8 @@ export interface WortiseBannerProps extends ViewProps {
 
   onFailed: (error: { message: string; name: string }) => void;
 
+  onImpression: () => void;
+
   onLoaded: () => void;
 
   onSizeChange: (event: { nativeEvent: SizeChangeEvent }) => void;

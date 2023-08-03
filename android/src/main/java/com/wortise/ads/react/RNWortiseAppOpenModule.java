@@ -1,6 +1,8 @@
 package com.wortise.ads.react;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -13,18 +15,20 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.wortise.ads.AdError;
 import com.wortise.ads.appopen.AppOpenAd;
-import com.wortise.ads.appopen.AppOpenAd.Orientation;
 
 public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implements AppOpenAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED   = "onAppOpenClicked";
-  public static final String EVENT_DISMISSED = "onAppOpenDismissed";
-  public static final String EVENT_FAILED    = "onAppOpenFailed";
-  public static final String EVENT_LOADED    = "onAppOpenLoaded";
-  public static final String EVENT_SHOWN     = "onAppOpenShown";
+  public static final String EVENT_CLICKED    = "onAppOpenClicked";
+  public static final String EVENT_DISMISSED  = "onAppOpenDismissed";
+  public static final String EVENT_FAILED     = "onAppOpenFailed";
+  public static final String EVENT_IMPRESSION = "onAppOpenImpression";
+  public static final String EVENT_LOADED     = "onAppOpenLoaded";
+  public static final String EVENT_SHOWN      = "onAppOpenShown";
 
 
   private AppOpenAd mAppOpenAd;
+
+  private Handler mHandler = new Handler(Looper.getMainLooper());
 
 
   public RNWortiseAppOpenModule(ReactApplicationContext reactContext) {
@@ -66,7 +70,7 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
       return;
     }
 
-    mAppOpenAd.loadAd();
+    mHandler.post(() -> mAppOpenAd.loadAd());
   }
 
   @ReactMethod
@@ -97,23 +101,6 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
   }
 
   @ReactMethod
-  public void setOrientation(String orientation) {
-    if (mAppOpenAd == null) {
-      return;
-    }
-
-    Orientation value;
-    
-    try {
-      value = Orientation.valueOf(orientation);
-    } catch (Throwable t) {
-      return;
-    }
-
-    mAppOpenAd.setOrientation(value);
-  }
-
-  @ReactMethod
   public void showAd(Promise promise) {
     Activity currentActivity = getCurrentActivity();
 
@@ -122,11 +109,14 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
         return;
     }
 
-    boolean result = (currentActivity != null)
-      ? mAppOpenAd.showAd(currentActivity)
-      : mAppOpenAd.showAd();
+    mHandler.post(() -> {
 
-    promise.resolve(result);
+      boolean result = (currentActivity != null)
+        ? mAppOpenAd.showAd(currentActivity)
+        : mAppOpenAd.showAd();
+
+      promise.resolve(result);
+    });
   }
 
   @ReactMethod
@@ -180,6 +170,11 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
     event.putString("name",    error.name());
 
     sendEvent(EVENT_FAILED, event);
+  }
+
+  @Override
+  public void onAppOpenImpression(AppOpenAd ad) {
+    sendEvent(EVENT_IMPRESSION, null);
   }
 
   @Override

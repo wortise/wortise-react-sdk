@@ -7,6 +7,10 @@ export default {
     return RNWortiseConsentManager.canCollectData();
   },
 
+  get canRequestPersonalizedAds() {
+    return RNWortiseConsentManager.canRequestPersonalizedAds();
+  },
+
   get isGranted() {
     return RNWortiseConsentManager.isGranted();
   },
@@ -15,12 +19,16 @@ export default {
     return RNWortiseConsentManager.isReplied();
   },
 
-  request(withOptOut: boolean) {
-    return RNWortiseConsentManager.request(withOptOut ?? false);
+  request() {
+    return RNWortiseConsentManager.request();
   },
 
-  requestOnce(withOptOut: boolean) {
-    return RNWortiseConsentManager.requestOnce(withOptOut ?? false);
+  requestIfRequired() {
+    return RNWortiseConsentManager.requestIfRequired();
+  },
+
+  requestOnce() {
+    return RNWortiseConsentManager.requestOnce();
   },
 
   set(granted: boolean) {

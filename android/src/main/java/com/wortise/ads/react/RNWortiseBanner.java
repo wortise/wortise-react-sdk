@@ -17,11 +17,9 @@ public class RNWortiseBanner extends BannerAd implements BannerAd.Listener, Life
 
   public static final String EVENT_CLICKED     = "onClicked";
   public static final String EVENT_FAILED      = "onFailed";
+  public static final String EVENT_IMPRESSION  = "onImpression";
   public static final String EVENT_LOADED      = "onLoaded";
   public static final String EVENT_SIZE_CHANGE = "onSizeChange";
-
-
-  private BannerAd mBannerAd;
 
 
   public RNWortiseBanner(ReactContext context) {
@@ -67,6 +65,11 @@ public class RNWortiseBanner extends BannerAd implements BannerAd.Listener, Life
     event.putString("name",    error.name());
 
     sendEvent(EVENT_FAILED, event);
+  }
+
+  @Override
+  public void onBannerImpression(BannerAd ad) {
+    sendEvent(EVENT_IMPRESSION, null);
   }
 
   @Override

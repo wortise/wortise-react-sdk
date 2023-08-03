@@ -1,6 +1,8 @@
 package com.wortise.ads.react;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -17,13 +19,16 @@ import com.wortise.ads.rewarded.models.Reward;
 
 public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implements RewardedAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED   = "onRewardedClicked";
-  public static final String EVENT_COMPLETED = "onRewardedCompleted";
-  public static final String EVENT_DISMISSED = "onRewardedDismissed";
-  public static final String EVENT_FAILED    = "onRewardedFailed";
-  public static final String EVENT_LOADED    = "onRewardedLoaded";
-  public static final String EVENT_SHOWN     = "onRewardedShown";
+  public static final String EVENT_CLICKED    = "onRewardedClicked";
+  public static final String EVENT_COMPLETED  = "onRewardedCompleted";
+  public static final String EVENT_DISMISSED  = "onRewardedDismissed";
+  public static final String EVENT_FAILED     = "onRewardedFailed";
+  public static final String EVENT_IMPRESSION = "onRewardedImpression";
+  public static final String EVENT_LOADED     = "onRewardedLoaded";
+  public static final String EVENT_SHOWN      = "onRewardedShown";
 
+
+  private Handler mHandler = new Handler(Looper.getMainLooper());
 
   private RewardedAd mRewardedAd;
 
@@ -67,7 +72,7 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
       return;
     }
 
-    mRewardedAd.loadAd();
+    mHandler.post(() -> mRewardedAd.loadAd());
   }
 
   @ReactMethod
@@ -97,11 +102,14 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
         return;
     }
 
-    boolean result = (currentActivity != null)
-      ? mRewardedAd.showAd(currentActivity)
-      : mRewardedAd.showAd();
+    mHandler.post(() -> {
 
-    promise.resolve(result);
+      boolean result = (currentActivity != null)
+        ? mRewardedAd.showAd(currentActivity)
+        : mRewardedAd.showAd();
+
+      promise.resolve(result);
+    });
   }
 
 
@@ -152,6 +160,11 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
     event.putString("name",    error.name());
 
     sendEvent(EVENT_FAILED, event);
+  }
+
+  @Override
+  public void onRewardedImpression(RewardedAd ad) {
+    sendEvent(EVENT_IMPRESSION, null);
   }
 
   @Override

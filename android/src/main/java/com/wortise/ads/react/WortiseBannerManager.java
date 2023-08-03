@@ -38,6 +38,7 @@ public class WortiseBannerManager extends SimpleViewManager<RNWortiseBanner> {
     String[] events = {
       RNWortiseBanner.EVENT_CLICKED,
       RNWortiseBanner.EVENT_FAILED,
+      RNWortiseBanner.EVENT_IMPRESSION,
       RNWortiseBanner.EVENT_LOADED,
       RNWortiseBanner.EVENT_SIZE_CHANGE
     };

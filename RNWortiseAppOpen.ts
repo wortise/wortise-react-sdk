@@ -4,14 +4,7 @@ const { RNWortiseAppOpen } = NativeModules;
 
 const emitter = new NativeEventEmitter(RNWortiseAppOpen);
 
-const Orientation = {
-  LANDSCAPE: 'LANDSCAPE',
-  PORTRAIT: 'PORTRAIT',
-};
-
 export default {
-  Orientation,
-
   get isAvailable() {
     return RNWortiseAppOpen.isAvailable();
   },
@@ -42,10 +35,6 @@ export default {
 
   setAutoReload(autoReload: boolean) {
     RNWortiseAppOpen.setAutoReload(autoReload);
-  },
-
-  setOrientation(orientation: string) {
-    RNWortiseAppOpen.setOrientation(orientation);
   },
 
   showAd() {
