@@ -33,13 +33,8 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void isGranted(Promise promise) {
-    promise.resolve(isGranted());
-  }
-
-  @ReactMethod
-  public void isReplied(Promise promise) {
-    promise.resolve(isReplied());
+  public void exists(Promise promise) {
+    promise.resolve(ConsentManager.exists(getReactApplicationContext()));
   }
 
   @ReactMethod
@@ -70,39 +65,5 @@ public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
       promise.resolve(shown);
       return Unit.INSTANCE;
     });
-  }
-
-  @ReactMethod
-  public void requestOnce(Promise promise) {
-    Activity currentActivity = getCurrentActivity();
-
-    if (currentActivity == null) {
-      promise.resolve(false);
-      return;
-    }
-
-    ConsentManager.requestOnce(currentActivity, shown -> {
-      promise.resolve(shown);
-      return Unit.INSTANCE;
-    });
-  }
-
-  @ReactMethod
-  public void set(boolean granted) {
-    ConsentManager.set(getReactApplicationContext(), granted);
-  }
-
-  @ReactMethod
-  public void setIabString(String value) {
-    ConsentManager.setIabString(getReactApplicationContext(), value);
-  }
-
-
-  private boolean isGranted() {
-    return ConsentManager.isGranted(getReactApplicationContext());
-  }
-
-  private boolean isReplied() {
-    return ConsentManager.isReplied(getReactApplicationContext());
   }
 }

@@ -11,12 +11,8 @@ export default {
     return RNWortiseConsentManager.canRequestPersonalizedAds();
   },
 
-  get isGranted() {
-    return RNWortiseConsentManager.isGranted();
-  },
-
-  get isReplied() {
-    return RNWortiseConsentManager.isReplied();
+  get exists() {
+    return RNWortiseConsentManager.exists();
   },
 
   request() {
@@ -25,17 +21,5 @@ export default {
 
   requestIfRequired() {
     return RNWortiseConsentManager.requestIfRequired();
-  },
-
-  requestOnce() {
-    return RNWortiseConsentManager.requestOnce();
-  },
-
-  set(granted: boolean) {
-    RNWortiseConsentManager.set(granted);
-  },
-
-  setIabString(value: string) {
-    RNWortiseConsentManager.setIabString(value);
   },
 };
