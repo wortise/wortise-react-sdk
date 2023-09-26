@@ -15,11 +15,11 @@ import com.wortise.ads.banner.BannerAd;
 
 public class RNWortiseBanner extends BannerAd implements BannerAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED     = "onClicked";
-  public static final String EVENT_FAILED      = "onFailed";
-  public static final String EVENT_IMPRESSION  = "onImpression";
-  public static final String EVENT_LOADED      = "onLoaded";
-  public static final String EVENT_SIZE_CHANGE = "onSizeChange";
+  public static final String EVENT_CLICKED        = "onClicked";
+  public static final String EVENT_FAILED_TO_LOAD = "onFailedToLoad";
+  public static final String EVENT_IMPRESSION     = "onImpression";
+  public static final String EVENT_LOADED         = "onLoaded";
+  public static final String EVENT_SIZE_CHANGE    = "onSizeChange";
 
 
   public RNWortiseBanner(ReactContext context) {
@@ -58,13 +58,13 @@ public class RNWortiseBanner extends BannerAd implements BannerAd.Listener, Life
   }
 
   @Override
-  public void onBannerFailed(BannerAd ad, AdError error) {
+  public void onBannerFailedToLoad(BannerAd ad, AdError error) {
     WritableMap event = Arguments.createMap();
 
     event.putString("message", error.toString());
     event.putString("name",    error.name());
 
-    sendEvent(EVENT_FAILED, event);
+    sendEvent(EVENT_FAILED_TO_LOAD, event);
   }
 
   @Override

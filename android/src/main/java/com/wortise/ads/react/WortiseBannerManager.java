@@ -37,7 +37,7 @@ public class WortiseBannerManager extends SimpleViewManager<RNWortiseBanner> {
   public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
     String[] events = {
       RNWortiseBanner.EVENT_CLICKED,
-      RNWortiseBanner.EVENT_FAILED,
+      RNWortiseBanner.EVENT_FAILED_TO_LOAD,
       RNWortiseBanner.EVENT_IMPRESSION,
       RNWortiseBanner.EVENT_LOADED,
       RNWortiseBanner.EVENT_SIZE_CHANGE

@@ -1,8 +1,6 @@
 package com.wortise.ads.react;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -18,17 +16,16 @@ import com.wortise.ads.appopen.AppOpenAd;
 
 public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implements AppOpenAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED    = "onAppOpenClicked";
-  public static final String EVENT_DISMISSED  = "onAppOpenDismissed";
-  public static final String EVENT_FAILED     = "onAppOpenFailed";
-  public static final String EVENT_IMPRESSION = "onAppOpenImpression";
-  public static final String EVENT_LOADED     = "onAppOpenLoaded";
-  public static final String EVENT_SHOWN      = "onAppOpenShown";
+  public static final String EVENT_CLICKED        = "onAppOpenClicked";
+  public static final String EVENT_DISMISSED      = "onAppOpenDismissed";
+  public static final String EVENT_FAILED_TO_LOAD = "onAppOpenFailedToLoad";
+  public static final String EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow";
+  public static final String EVENT_IMPRESSION     = "onAppOpenImpression";
+  public static final String EVENT_LOADED         = "onAppOpenLoaded";
+  public static final String EVENT_SHOWN          = "onAppOpenShown";
 
 
   private AppOpenAd mAppOpenAd;
-
-  private Handler mHandler = new Handler(Looper.getMainLooper());
 
 
   public RNWortiseAppOpenModule(ReactApplicationContext reactContext) {
@@ -70,7 +67,7 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
       return;
     }
 
-    mHandler.post(() -> mAppOpenAd.loadAd());
+    mAppOpenAd.loadAd();
   }
 
   @ReactMethod
@@ -109,14 +106,13 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
         return;
     }
 
-    mHandler.post(() -> {
+    if (currentActivity != null) {
+      mAppOpenAd.showAd(currentActivity);
+    } else {
+      mAppOpenAd.showAd();
+    }
 
-      boolean result = (currentActivity != null)
-        ? mAppOpenAd.showAd(currentActivity)
-        : mAppOpenAd.showAd();
-
-      promise.resolve(result);
-    });
+    promise.resolve(true);
   }
 
   @ReactMethod
@@ -128,9 +124,9 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
         return;
     }
 
-    boolean result = mAppOpenAd.tryToShowAd(currentActivity);
+    mAppOpenAd.tryToShowAd(currentActivity);
 
-    promise.resolve(result);
+    promise.resolve(true);
   }
 
 
@@ -163,13 +159,23 @@ public class RNWortiseAppOpenModule extends ReactContextBaseJavaModule implement
   }
 
   @Override
-  public void onAppOpenFailed(AppOpenAd ad, AdError error) {
+  public void onAppOpenFailedToLoad(AppOpenAd ad, AdError error) {
     WritableMap event = Arguments.createMap();
 
     event.putString("message", error.toString());
     event.putString("name",    error.name());
 
-    sendEvent(EVENT_FAILED, event);
+    sendEvent(EVENT_FAILED_TO_LOAD, event);
+  }
+
+  @Override
+  public void onAppOpenFailedToShow(AppOpenAd ad, AdError error) {
+    WritableMap event = Arguments.createMap();
+
+    event.putString("message", error.toString());
+    event.putString("name",    error.name());
+
+    sendEvent(EVENT_FAILED_TO_SHOW, event);
   }
 
   @Override

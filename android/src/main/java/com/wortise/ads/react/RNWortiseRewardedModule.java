@@ -1,8 +1,6 @@
 package com.wortise.ads.react;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
@@ -19,16 +17,15 @@ import com.wortise.ads.rewarded.models.Reward;
 
 public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implements RewardedAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED    = "onRewardedClicked";
-  public static final String EVENT_COMPLETED  = "onRewardedCompleted";
-  public static final String EVENT_DISMISSED  = "onRewardedDismissed";
-  public static final String EVENT_FAILED     = "onRewardedFailed";
-  public static final String EVENT_IMPRESSION = "onRewardedImpression";
-  public static final String EVENT_LOADED     = "onRewardedLoaded";
-  public static final String EVENT_SHOWN      = "onRewardedShown";
+  public static final String EVENT_CLICKED        = "onRewardedClicked";
+  public static final String EVENT_COMPLETED      = "onRewardedCompleted";
+  public static final String EVENT_DISMISSED      = "onRewardedDismissed";
+  public static final String EVENT_FAILED_TO_LOAD = "onRewardedFailedToLoad";
+  public static final String EVENT_FAILED_TO_SHOW = "onRewardedFailedToShow";
+  public static final String EVENT_IMPRESSION     = "onRewardedImpression";
+  public static final String EVENT_LOADED         = "onRewardedLoaded";
+  public static final String EVENT_SHOWN          = "onRewardedShown";
 
-
-  private Handler mHandler = new Handler(Looper.getMainLooper());
 
   private RewardedAd mRewardedAd;
 
@@ -72,7 +69,7 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
       return;
     }
 
-    mHandler.post(() -> mRewardedAd.loadAd());
+    mRewardedAd.loadAd();
   }
 
   @ReactMethod
@@ -102,16 +99,14 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
         return;
     }
 
-    mHandler.post(() -> {
+    if (currentActivity != null) {
+      mRewardedAd.showAd(currentActivity);
+    } else {
+      mRewardedAd.showAd();
+    }
 
-      boolean result = (currentActivity != null)
-        ? mRewardedAd.showAd(currentActivity)
-        : mRewardedAd.showAd();
-
-      promise.resolve(result);
-    });
+    promise.resolve(true);
   }
-
 
   private void sendEvent(String eventName, WritableMap params) {
     getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(eventName, params);
@@ -153,13 +148,23 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
   }
 
   @Override
-  public void onRewardedFailed(RewardedAd ad, AdError error) {
+  public void onRewardedFailedToLoad(RewardedAd ad, AdError error) {
     WritableMap event = Arguments.createMap();
 
     event.putString("message", error.toString());
     event.putString("name",    error.name());
 
-    sendEvent(EVENT_FAILED, event);
+    sendEvent(EVENT_FAILED_TO_LOAD, event);
+  }
+
+  @Override
+  public void onRewardedFailedToShow(RewardedAd ad, AdError error) {
+    WritableMap event = Arguments.createMap();
+
+    event.putString("message", error.toString());
+    event.putString("name",    error.name());
+
+    sendEvent(EVENT_FAILED_TO_SHOW, event);
   }
 
   @Override
