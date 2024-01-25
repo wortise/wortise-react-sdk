@@ -4,6 +4,8 @@ export { default as RNWortiseAdSettings } from './RNWortiseAdSettings';
 
 export { default as RNWortiseAdSize } from './RNWortiseAdSize';
 
+export { default as RNWortiseAppOpen } from './RNWortiseAppOpen';
+
 export { default as RNWortiseConsentManager } from './RNWortiseConsentManager';
 
 export { default as RNWortiseDataManager } from './RNWortiseDataManager';
