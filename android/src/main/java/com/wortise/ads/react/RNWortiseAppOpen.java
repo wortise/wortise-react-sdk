@@ -12,29 +12,29 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import com.wortise.ads.AdError;
-import com.wortise.ads.interstitial.InterstitialAd;
+import com.wortise.ads.appopen.AppOpenAd;
 
-public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule implements InterstitialAd.Listener, LifecycleEventListener {
+public class RNWortiseAppOpen extends ReactContextBaseJavaModule implements AppOpenAd.Listener, LifecycleEventListener {
 
-  public static final String EVENT_CLICKED        = "onInterstitialClicked";
-  public static final String EVENT_DISMISSED      = "onInterstitialDismissed";
-  public static final String EVENT_FAILED_TO_LOAD = "onInterstitialFailedToLoad";
-  public static final String EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow";
-  public static final String EVENT_IMPRESSION     = "onInterstitialImpression";
-  public static final String EVENT_LOADED         = "onInterstitialLoaded";
-  public static final String EVENT_SHOWN          = "onInterstitialShown";
-
-
-  private InterstitialAd mInterstitialAd;
+  public static final String EVENT_CLICKED        = "onAppOpenClicked";
+  public static final String EVENT_DISMISSED      = "onAppOpenDismissed";
+  public static final String EVENT_FAILED_TO_LOAD = "onAppOpenFailedToLoad";
+  public static final String EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow";
+  public static final String EVENT_IMPRESSION     = "onAppOpenImpression";
+  public static final String EVENT_LOADED         = "onAppOpenLoaded";
+  public static final String EVENT_SHOWN          = "onAppOpenShown";
 
 
-  public RNWortiseInterstitialModule(ReactApplicationContext reactContext) {
+  private AppOpenAd mAppOpenAd;
+
+
+  public RNWortiseAppOpen(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 
   @Override
   public String getName() {
-    return "RNWortiseInterstitial";
+    return "RNWortiseAppOpen";
   }
 
   @ReactMethod
@@ -43,31 +43,31 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
 
   @ReactMethod
   public void destroy() {
-    if (mInterstitialAd == null) {
+    if (mAppOpenAd == null) {
       return;
     }
 
-    mInterstitialAd.destroy();
-    mInterstitialAd = null;
+    mAppOpenAd.destroy();
+    mAppOpenAd = null;
   }
 
   @ReactMethod
   public void isAvailable(Promise promise) {
-    promise.resolve((mInterstitialAd != null) && mInterstitialAd.isAvailable());
+    promise.resolve((mAppOpenAd != null) && mAppOpenAd.isAvailable());
   }
 
   @ReactMethod
   public void isShowing(Promise promise) {
-    promise.resolve((mInterstitialAd != null) && mInterstitialAd.isShowing());
+    promise.resolve((mAppOpenAd != null) && mAppOpenAd.isShowing());
   }
 
   @ReactMethod
   public void loadAd() {
-    if (mInterstitialAd == null) {
+    if (mAppOpenAd == null) {
       return;
     }
 
-    mInterstitialAd.loadAd();
+    mAppOpenAd.loadAd();
   }
 
   @ReactMethod
@@ -84,24 +84,47 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
 
     destroy();
 
-    mInterstitialAd = new InterstitialAd(currentActivity, adUnitId);
-    mInterstitialAd.setListener(this);
+    mAppOpenAd = new AppOpenAd(currentActivity, adUnitId);
+    mAppOpenAd.setListener(this);
+  }
+
+  @ReactMethod
+  public void setAutoReload(boolean autoReload) {
+    if (mAppOpenAd == null) {
+      return;
+    }
+
+    mAppOpenAd.setAutoReload(autoReload);
   }
 
   @ReactMethod
   public void showAd(Promise promise) {
     Activity currentActivity = getCurrentActivity();
 
-    if (mInterstitialAd == null) {
+    if (mAppOpenAd == null) {
         promise.resolve(false);
         return;
     }
 
     if (currentActivity != null) {
-      mInterstitialAd.showAd(currentActivity);
+      mAppOpenAd.showAd(currentActivity);
     } else {
-      mInterstitialAd.showAd();
+      mAppOpenAd.showAd();
     }
+
+    promise.resolve(true);
+  }
+
+  @ReactMethod
+  public void tryToShowAd(Promise promise) {
+    Activity currentActivity = getCurrentActivity();
+
+    if (mAppOpenAd == null) {
+        promise.resolve(false);
+        return;
+    }
+
+    mAppOpenAd.tryToShowAd(currentActivity);
 
     promise.resolve(true);
   }
@@ -126,17 +149,17 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
   }
 
   @Override
-  public void onInterstitialClicked(InterstitialAd ad) {
+  public void onAppOpenClicked(AppOpenAd ad) {
     sendEvent(EVENT_CLICKED, null);
   }
 
   @Override
-  public void onInterstitialDismissed(InterstitialAd ad) {
+  public void onAppOpenDismissed(AppOpenAd ad) {
     sendEvent(EVENT_DISMISSED, null);
   }
 
   @Override
-  public void onInterstitialFailedToLoad(InterstitialAd ad, AdError error) {
+  public void onAppOpenFailedToLoad(AppOpenAd ad, AdError error) {
     WritableMap event = Arguments.createMap();
 
     event.putString("message", error.toString());
@@ -146,7 +169,7 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
   }
 
   @Override
-  public void onInterstitialFailedToShow(InterstitialAd ad, AdError error) {
+  public void onAppOpenFailedToShow(AppOpenAd ad, AdError error) {
     WritableMap event = Arguments.createMap();
 
     event.putString("message", error.toString());
@@ -156,17 +179,17 @@ public class RNWortiseInterstitialModule extends ReactContextBaseJavaModule impl
   }
 
   @Override
-  public void onInterstitialImpression(InterstitialAd ad) {
+  public void onAppOpenImpression(AppOpenAd ad) {
     sendEvent(EVENT_IMPRESSION, null);
   }
 
   @Override
-  public void onInterstitialLoaded(InterstitialAd ad) {
+  public void onAppOpenLoaded(AppOpenAd ad) {
     sendEvent(EVENT_LOADED, null);
   }
 
   @Override
-  public void onInterstitialShown(InterstitialAd ad) {
+  public void onAppOpenShown(AppOpenAd ad) {
     sendEvent(EVENT_SHOWN, null);
   }
 }

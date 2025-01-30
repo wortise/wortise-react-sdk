@@ -19,20 +19,20 @@ public class RNWortisePackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
       return Arrays.<NativeModule>asList(
-        new RNWortiseAdSettingsModule    (reactContext),
-        new RNWortiseAppOpenModule       (reactContext),
-        new RNWortiseConsentManagerModule(reactContext),
-        new RNWortiseDataManagerModule   (reactContext),
-        new RNWortiseInterstitialModule  (reactContext),
-        new RNWortiseRewardedModule      (reactContext),
-        new RNWortiseSdkModule           (reactContext)
+        new RNWortiseAdSettings    (reactContext),
+        new RNWortiseAppOpen       (reactContext),
+        new RNWortiseConsentManager(reactContext),
+        new RNWortiseDataManager   (reactContext),
+        new RNWortiseInterstitial  (reactContext),
+        new RNWortiseRewarded      (reactContext),
+        new RNWortiseSdk           (reactContext)
       );
     }
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
       return Arrays.<ViewManager>asList(
-        new WortiseBannerManager()
+        new RNWortiseBanner()
       );
     }
 }

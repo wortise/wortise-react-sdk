@@ -8,9 +8,9 @@ import com.facebook.react.bridge.ReactMethod;
 import com.wortise.ads.AdContentRating;
 import com.wortise.ads.AdSettings;
 
-public class RNWortiseAdSettingsModule extends ReactContextBaseJavaModule {
+public class RNWortiseAdSettings extends ReactContextBaseJavaModule {
 
-  public RNWortiseAdSettingsModule(ReactApplicationContext reactContext) {
+  public RNWortiseAdSettings(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 

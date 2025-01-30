@@ -2,100 +2,104 @@ package com.wortise.ads.react;
 
 import android.content.Context;
 
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.LifecycleEventListener;
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.uimanager.events.RCTEventEmitter;
-import com.facebook.react.views.view.ReactViewGroup;
+import com.facebook.react.bridge.ReadableArray;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.common.MapBuilder;
+import com.facebook.react.uimanager.SimpleViewManager;
+import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.annotations.ReactProp;
 
-import com.wortise.ads.AdError;
 import com.wortise.ads.AdSize;
 import com.wortise.ads.banner.BannerAd;
 
-public class RNWortiseBanner extends BannerAd implements BannerAd.Listener, LifecycleEventListener {
+import java.util.Map;
 
-  public static final String EVENT_CLICKED        = "onClicked";
-  public static final String EVENT_FAILED_TO_LOAD = "onFailedToLoad";
-  public static final String EVENT_IMPRESSION     = "onImpression";
-  public static final String EVENT_LOADED         = "onLoaded";
-  public static final String EVENT_SIZE_CHANGE    = "onSizeChange";
+public class RNWortiseBanner extends SimpleViewManager<RNWortiseBannerView> {
 
-
-  public RNWortiseBanner(ReactContext context) {
-    super(context);
-
-    setListener(this);
-
-    context.addLifecycleEventListener(this);
-  }
-
-
-  private void sendEvent(String eventName, WritableMap params) {
-    ReactContext reactContext = (ReactContext) getContext();
-    reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), eventName, params);
-  }
+  public static final String COMMAND_LOAD_AD = "loadAd";
 
 
   @Override
-  public void onHostDestroy() {
-    destroy();
+  protected RNWortiseBannerView createViewInstance(ThemedReactContext reactContext) {
+    return new RNWortiseBannerView(reactContext);
   }
 
   @Override
-  public void onHostPause() {
-    pause();
+  public Map<String, Integer> getCommandsMap() {
+    return MapBuilder.of("loadAd", COMMAND_LOAD_AD);
   }
 
   @Override
-  public void onHostResume() {
-    resume();
+  public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
+    String[] events = {
+      RNWortiseBanner.EVENT_CLICKED,
+      RNWortiseBanner.EVENT_FAILED_TO_LOAD,
+      RNWortiseBanner.EVENT_IMPRESSION,
+      RNWortiseBanner.EVENT_LOADED,
+      RNWortiseBanner.EVENT_SIZE_CHANGE
+    };
+
+    MapBuilder.Builder<String, Object> builder = MapBuilder.builder();
+
+    for (int i = 0; i < events.length; i++) {
+      builder.put(events[i], MapBuilder.of("registrationName", events[i]));
+    }
+
+    return builder.build();
   }
 
   @Override
-  public void onBannerClicked(BannerAd ad) {
-    sendEvent(EVENT_CLICKED, null);
+  public String getName() {
+    return "RNWortiseBanner";
   }
 
   @Override
-  public void onBannerFailedToLoad(BannerAd ad, AdError error) {
-    WritableMap event = Arguments.createMap();
-
-    event.putString("message", error.toString());
-    event.putString("name",    error.name());
-
-    sendEvent(EVENT_FAILED_TO_LOAD, event);
-  }
-
-  @Override
-  public void onBannerImpression(BannerAd ad) {
-    sendEvent(EVENT_IMPRESSION, null);
-  }
-
-  @Override
-  public void onBannerLoaded(BannerAd ad) {
-    int height = getAdHeightPx();
-    int width  = getAdWidthPx ();
-
-    int left = getLeft();
-    int top  = getTop ();
-
-    measure(width, height);
-
-    layout(left, top, left + width, top + height);
-
-    sendOnSizeChangeEvent();
-
-    sendEvent(EVENT_LOADED, null);
+  public void receiveCommand(RNWortiseBanner view, String commandId, ReadableArray args) {
+    switch (commandId) {
+    case COMMAND_LOAD_AD:
+      view.loadAd();
+      break;
+    }
   }
 
 
-  private void sendOnSizeChangeEvent() {
-    WritableMap event = Arguments.createMap();
+  private AdSize getAdSize(Context context, ReadableMap adSize) {
+    int height = adSize.getInt("height");
+    int width  = adSize.getInt("width");
 
-    event.putDouble("height", getAdHeight());
-    event.putDouble("width",  getAdWidth());
+    String type = adSize.getString("type");
 
-    sendEvent(EVENT_SIZE_CHANGE, event);
+    switch (type) {
+    case "anchored":
+      return AdSize.getAnchoredAdaptiveBannerAdSize(context, width);
+
+    case "inline":
+      return AdSize.getInlineAdaptiveBannerAdSize(context, width, height);
+
+    default:
+      return new AdSize(width, height);
+    }
+  }
+
+  
+  @ReactProp(name = "adSize")
+  public void setAdSize(RNWortiseBanner view, ReadableMap adSize) {
+    if (adSize == null) {
+      return;
+    }
+
+    AdSize size = getAdSize(view.getContext(), adSize);
+
+    view.setAdSize(size);
+  }
+
+  @ReactProp(name = "adUnitId")
+  public void setAdUnitId(RNWortiseBanner view, String adUnitId) {
+    view.setAdUnitId(adUnitId);
+  }
+
+  @ReactProp(name = "autoRefreshTime", defaultInt = 0)
+  public void setAutoRefresh(RNWortiseBanner view, int autoRefreshTime) {
+    view.setAutoRefreshTime(autoRefreshTime);
   }
 }

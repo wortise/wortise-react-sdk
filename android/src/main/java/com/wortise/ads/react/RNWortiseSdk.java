@@ -9,9 +9,9 @@ import com.wortise.ads.WortiseSdk;
 
 import kotlin.Unit;
 
-public class RNWortiseSdkModule extends ReactContextBaseJavaModule {
+public class RNWortiseSdk extends ReactContextBaseJavaModule {
 
-  public RNWortiseSdkModule(ReactApplicationContext reactContext) {
+  public RNWortiseSdk(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 
@@ -21,16 +21,16 @@ public class RNWortiseSdkModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void getVersion(Promise promise) {
+    promise.resolve(WortiseSdk.getVersion());
+  }
+
+  @ReactMethod
   public void initialize(String assetKey, Promise promise) {
     WortiseSdk.initialize(getReactApplicationContext(), assetKey, () -> {
       promise.resolve(null);
       return Unit.INSTANCE;
     });
-  }
-
-  @ReactMethod
-  public void getVersion(Promise promise) {
-    promise.resolve(WortiseSdk.getVersion());
   }
 
   @ReactMethod

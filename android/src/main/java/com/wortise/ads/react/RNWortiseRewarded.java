@@ -15,7 +15,7 @@ import com.wortise.ads.AdError;
 import com.wortise.ads.rewarded.RewardedAd;
 import com.wortise.ads.rewarded.models.Reward;
 
-public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implements RewardedAd.Listener, LifecycleEventListener {
+public class RNWortiseRewarded extends ReactContextBaseJavaModule implements RewardedAd.Listener, LifecycleEventListener {
 
   public static final String EVENT_CLICKED        = "onRewardedClicked";
   public static final String EVENT_COMPLETED      = "onRewardedCompleted";
@@ -30,7 +30,7 @@ public class RNWortiseRewardedModule extends ReactContextBaseJavaModule implemen
   private RewardedAd mRewardedAd;
 
 
-  public RNWortiseRewardedModule(ReactApplicationContext reactContext) {
+  public RNWortiseRewarded(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 

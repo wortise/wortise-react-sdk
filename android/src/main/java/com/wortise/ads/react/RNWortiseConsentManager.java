@@ -11,9 +11,9 @@ import com.wortise.ads.consent.ConsentManager;
 
 import kotlin.Unit;
 
-public class RNWortiseConsentManagerModule extends ReactContextBaseJavaModule {
+public class RNWortiseConsentManager extends ReactContextBaseJavaModule {
 
-  public RNWortiseConsentManagerModule(ReactApplicationContext reactContext) {
+  public RNWortiseConsentManager(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 

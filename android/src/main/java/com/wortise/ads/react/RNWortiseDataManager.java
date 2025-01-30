@@ -13,9 +13,9 @@ import com.wortise.ads.user.UserGender;
 import java.lang.Integer;
 import java.util.List;
 
-public class RNWortiseDataManagerModule extends ReactContextBaseJavaModule {
+public class RNWortiseDataManager extends ReactContextBaseJavaModule {
 
-  public RNWortiseDataManagerModule(ReactApplicationContext reactContext) {
+  public RNWortiseDataManager(ReactApplicationContext reactContext) {
     super(reactContext);
   }
 

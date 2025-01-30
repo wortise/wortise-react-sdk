@@ -44,10 +44,6 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     };
   }
 
-  componentDidMount() {
-    this.loadAd();
-  }
-
   handleSizeChange(event: { nativeEvent: SizeChangeEvent }) {
     const { height, width } = event.nativeEvent;
 
