@@ -58,7 +58,7 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     UIManager.dispatchViewManagerCommand(
       findNodeHandle(this.ref.current),
       UIManager.getViewManagerConfig('RNWortiseBanner').Commands.loadAd,
-      undefined,
+      [],
     );
   }
 

@@ -31,7 +31,7 @@ class RNWortiseDataManager: NSObject {
     }
 
     @objc(setEmails:)
-    func setEmails(_ list: [String]?) {
+    func setEmails(_ list: NSArray?) {
         // Not supported
     }
 

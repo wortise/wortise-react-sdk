@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class RNWortiseBanner extends SimpleViewManager<RNWortiseBannerView> {
 
-  public static final String COMMAND_LOAD_AD = "loadAd";
+  public static final int COMMAND_LOAD_AD = 1;
 
 
   @Override
@@ -32,11 +32,11 @@ public class RNWortiseBanner extends SimpleViewManager<RNWortiseBannerView> {
   @Override
   public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
     String[] events = {
-      RNWortiseBanner.EVENT_CLICKED,
-      RNWortiseBanner.EVENT_FAILED_TO_LOAD,
-      RNWortiseBanner.EVENT_IMPRESSION,
-      RNWortiseBanner.EVENT_LOADED,
-      RNWortiseBanner.EVENT_SIZE_CHANGE
+      RNWortiseBannerView.EVENT_CLICKED,
+      RNWortiseBannerView.EVENT_FAILED_TO_LOAD,
+      RNWortiseBannerView.EVENT_IMPRESSION,
+      RNWortiseBannerView.EVENT_LOADED,
+      RNWortiseBannerView.EVENT_SIZE_CHANGE
     };
 
     MapBuilder.Builder<String, Object> builder = MapBuilder.builder();
@@ -54,7 +54,7 @@ public class RNWortiseBanner extends SimpleViewManager<RNWortiseBannerView> {
   }
 
   @Override
-  public void receiveCommand(RNWortiseBanner view, String commandId, ReadableArray args) {
+  public void receiveCommand(RNWortiseBannerView view, int commandId, ReadableArray args) {
     switch (commandId) {
     case COMMAND_LOAD_AD:
       view.loadAd();
@@ -83,7 +83,7 @@ public class RNWortiseBanner extends SimpleViewManager<RNWortiseBannerView> {
 
   
   @ReactProp(name = "adSize")
-  public void setAdSize(RNWortiseBanner view, ReadableMap adSize) {
+  public void setAdSize(RNWortiseBannerView view, ReadableMap adSize) {
     if (adSize == null) {
       return;
     }
@@ -94,12 +94,12 @@ public class RNWortiseBanner extends SimpleViewManager<RNWortiseBannerView> {
   }
 
   @ReactProp(name = "adUnitId")
-  public void setAdUnitId(RNWortiseBanner view, String adUnitId) {
+  public void setAdUnitId(RNWortiseBannerView view, String adUnitId) {
     view.setAdUnitId(adUnitId);
   }
 
   @ReactProp(name = "autoRefreshTime", defaultInt = 0)
-  public void setAutoRefresh(RNWortiseBanner view, int autoRefreshTime) {
+  public void setAutoRefresh(RNWortiseBannerView view, int autoRefreshTime) {
     view.setAutoRefreshTime(autoRefreshTime);
   }
 }

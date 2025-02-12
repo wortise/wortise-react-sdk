@@ -6,11 +6,13 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 
 import com.wortise.ads.data.DataManager;
 import com.wortise.ads.user.UserGender;
 
 import java.lang.Integer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RNWortiseDataManager extends ReactContextBaseJavaModule {
@@ -57,7 +59,13 @@ public class RNWortiseDataManager extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setEmails(List<String> list) {
+  public void setEmails(ReadableArray array) {
+    List<String> list = new ArrayList<>();
+
+    for (int i = 0; i < array.size(); i++) {
+      list.add(array.getString(i));
+    }
+
     DataManager.setEmails(getReactApplicationContext(), list);
   }
 
