@@ -1,6 +1,6 @@
 {
   "name": "@wortise/react-native-sdk",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Wortise SDK for React Native",
   "author": "Wortise",
   "main": "index.ts",
