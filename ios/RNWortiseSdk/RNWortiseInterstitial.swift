@@ -5,13 +5,14 @@ import WortiseSDK
 @objc(RNWortiseInterstitial)
 class RNWortiseInterstitial: RCTEventEmitter {
 
-    fileprivate static let EVENT_CLICKED        = "onInterstitialClicked";
-    fileprivate static let EVENT_DISMISSED      = "onInterstitialDismissed";
-    fileprivate static let EVENT_FAILED_TO_LOAD = "onInterstitialFailedToLoad";
-    fileprivate static let EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow";
-    fileprivate static let EVENT_IMPRESSION     = "onInterstitialImpression";
-    fileprivate static let EVENT_LOADED         = "onInterstitialLoaded";
-    fileprivate static let EVENT_SHOWN          = "onInterstitialShown";
+    fileprivate static let EVENT_CLICKED        = "onInterstitialClicked"
+    fileprivate static let EVENT_DISMISSED      = "onInterstitialDismissed"
+    fileprivate static let EVENT_FAILED_TO_LOAD = "onInterstitialFailedToLoad"
+    fileprivate static let EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow"
+    fileprivate static let EVENT_IMPRESSION     = "onInterstitialImpression"
+    fileprivate static let EVENT_LOADED         = "onInterstitialLoaded"
+    fileprivate static let EVENT_REVENUE_PAID   = "onInterstitialRevenuePaid"
+    fileprivate static let EVENT_SHOWN          = "onInterstitialShown"
 
 
     fileprivate var interstitialAd: WAInterstitialAd?
@@ -25,6 +26,7 @@ class RNWortiseInterstitial: RCTEventEmitter {
             RNWortiseInterstitial.EVENT_FAILED_TO_SHOW,
             RNWortiseInterstitial.EVENT_IMPRESSION,
             RNWortiseInterstitial.EVENT_LOADED,
+            RNWortiseInterstitial.EVENT_REVENUE_PAID,
             RNWortiseInterstitial.EVENT_SHOWN
         ]
     }
@@ -66,12 +68,12 @@ class RNWortiseInterstitial: RCTEventEmitter {
             return
         }
 
-        guard let controller = RCTPresentedViewController() else {
-            resolve(false)
-            return
-        }
-
         DispatchQueue.main.async {
+
+            guard let controller = RCTPresentedViewController() else {
+                resolve(false)
+                return
+            }
 
             interstitialAd.showAd(from: controller)
 
@@ -91,21 +93,11 @@ extension RNWortiseInterstitial: WAInterstitialDelegate {
     }
 
     func didFailToLoad(interstitialAd: WAInterstitialAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        sendEvent(withName: RNWortiseInterstitial.EVENT_FAILED_TO_LOAD, body: body)
+        sendEvent(withName: RNWortiseInterstitial.EVENT_FAILED_TO_LOAD, body: error.toMap())
     }
 
     func didFailToShow(interstitialAd: WAInterstitialAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        sendEvent(withName: RNWortiseInterstitial.EVENT_FAILED_TO_SHOW, body: body)
+        sendEvent(withName: RNWortiseInterstitial.EVENT_FAILED_TO_SHOW, body: error.toMap())
     }
 
     func didImpress(interstitialAd: WAInterstitialAd) {
@@ -114,6 +106,10 @@ extension RNWortiseInterstitial: WAInterstitialDelegate {
 
     func didLoad(interstitialAd: WAInterstitialAd) {
         sendEvent(withName: RNWortiseInterstitial.EVENT_LOADED, body: nil)
+    }
+
+    func didPayRevenue(interstitialAd: WAInterstitialAd, data: WARevenueData) {
+        sendEvent(withName: RNWortiseInterstitial.EVENT_REVENUE_PAID, body: data.toMap())
     }
 
     func didShow(interstitialAd: WAInterstitialAd) {

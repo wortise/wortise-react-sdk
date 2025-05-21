@@ -23,6 +23,8 @@ class RNWortiseBannerView: UIView {
     @objc
     var onLoaded: RCTBubblingEventBlock?
     @objc
+    var onRevenuePaid: RCTBubblingEventBlock?
+    @objc
     var onSizeChange: RCTBubblingEventBlock?
 
 
@@ -116,12 +118,7 @@ extension RNWortiseBannerView: WABannerDelegate {
     }
     
     func didFailToLoad(bannerAd: WABannerAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        onFailedToLoad?(body)
+        onFailedToLoad?(error.toMap())
     }
     
     func didImpress(bannerAd: WABannerAd) {
@@ -137,5 +134,9 @@ extension RNWortiseBannerView: WABannerDelegate {
         ]
 
         onSizeChange?(body)
+    }
+
+    func didPayRevenue(bannerAd: WABannerAd, data: WARevenueData) {
+        onRevenuePaid?(data.toMap())
     }
 }

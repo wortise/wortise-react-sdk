@@ -22,25 +22,31 @@ class RNWortiseConsentManager: NSObject {
 
     @objc(request:reject:)
     func request(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let controller = RCTPresentedViewController() else {
-            resolve(false)
-            return
-        }
+        DispatchQueue.main.async {
 
-        WAConsentManager.shared.request(controller) {
-            resolve($0)
+            guard let controller = RCTPresentedViewController() else {
+                resolve(false)
+                return
+            }
+
+            WAConsentManager.shared.request(controller) {
+                resolve($0)
+            }
         }
     }
 
     @objc(requestIfRequired:reject:)
     func requestIfRequired(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let controller = RCTPresentedViewController() else {
-            resolve(false)
-            return
-        }
+        DispatchQueue.main.async {
 
-        WAConsentManager.shared.request(ifRequired: controller) {
-            resolve($0)
+            guard let controller = RCTPresentedViewController() else {
+                resolve(false)
+                return
+            }
+
+            WAConsentManager.shared.request(ifRequired: controller) {
+                resolve($0)
+            }
         }
     }
 }

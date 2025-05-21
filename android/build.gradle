@@ -1,22 +1,30 @@
 buildscript {
+    ext.kotlin_version = '1.8.0'
+
     repositories {
         google()
-        jcenter()
+        gradlePluginPortal()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
+
+    if (project.android.hasProperty('namespace')) {
+        namespace 'com.wortise.ads.react'
+    }
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 34
+        minSdkVersion 23
+        targetSdkVersion 35
     }
 
     compileOptions {
@@ -31,10 +39,11 @@ android {
 
 repositories {
     google()
-    jcenter()
+    gradlePluginPortal()
 }
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.wortise:android-sdk:1.6.3'
+    implementation 'com.wortise:android-sdk:1.7.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }

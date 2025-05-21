@@ -15,8 +15,10 @@ class RNWortiseSdk: NSObject {
                     resolve:    @escaping RCTPromiseResolveBlock,
                     reject:     RCTPromiseRejectBlock) {
         
-        WortiseAds.shared.initialize(assetKey: assetKey) {
-            resolve(nil)
+        DispatchQueue.main.async {
+            WortiseAds.shared.initialize(assetKey: assetKey) {
+                resolve(nil)
+            }
         }
     }
 

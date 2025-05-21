@@ -5,14 +5,15 @@ import WortiseSDK
 @objc(RNWortiseRewarded)
 class RNWortiseRewarded: RCTEventEmitter {
 
-    fileprivate static let EVENT_CLICKED        = "onRewardedClicked";
-    fileprivate static let EVENT_COMPLETED      = "onRewardedCompleted";
-    fileprivate static let EVENT_DISMISSED      = "onRewardedDismissed";
-    fileprivate static let EVENT_FAILED_TO_LOAD = "onRewardedFailedToLoad";
-    fileprivate static let EVENT_FAILED_TO_SHOW = "onRewardedFailedToShow";
-    fileprivate static let EVENT_IMPRESSION     = "onRewardedImpression";
-    fileprivate static let EVENT_LOADED         = "onRewardedLoaded";
-    fileprivate static let EVENT_SHOWN          = "onRewardedShown";
+    fileprivate static let EVENT_CLICKED        = "onRewardedClicked"
+    fileprivate static let EVENT_COMPLETED      = "onRewardedCompleted"
+    fileprivate static let EVENT_DISMISSED      = "onRewardedDismissed"
+    fileprivate static let EVENT_FAILED_TO_LOAD = "onRewardedFailedToLoad"
+    fileprivate static let EVENT_FAILED_TO_SHOW = "onRewardedFailedToShow"
+    fileprivate static let EVENT_IMPRESSION     = "onRewardedImpression"
+    fileprivate static let EVENT_LOADED         = "onRewardedLoaded"
+    fileprivate static let EVENT_REVENUE_PAID   = "onRewardedRevenuePaid"
+    fileprivate static let EVENT_SHOWN          = "onRewardedShown"
 
 
     fileprivate var rewardedAd: WARewardedAd?
@@ -27,6 +28,7 @@ class RNWortiseRewarded: RCTEventEmitter {
             RNWortiseRewarded.EVENT_FAILED_TO_SHOW,
             RNWortiseRewarded.EVENT_IMPRESSION,
             RNWortiseRewarded.EVENT_LOADED,
+            RNWortiseRewarded.EVENT_REVENUE_PAID,
             RNWortiseRewarded.EVENT_SHOWN
         ]
     }
@@ -68,12 +70,12 @@ class RNWortiseRewarded: RCTEventEmitter {
             return
         }
 
-        guard let controller = RCTPresentedViewController() else {
-            resolve(false)
-            return
-        }
-
         DispatchQueue.main.async {
+
+            guard let controller = RCTPresentedViewController() else {
+                resolve(false)
+                return
+            }
 
             rewardedAd.showAd(from: controller)
 
@@ -103,21 +105,11 @@ extension RNWortiseRewarded: WARewardedDelegate {
     }
 
     func didFailToLoad(rewardedAd: WARewardedAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        sendEvent(withName: RNWortiseRewarded.EVENT_FAILED_TO_LOAD, body: body)
+        sendEvent(withName: RNWortiseRewarded.EVENT_FAILED_TO_LOAD, body: error.toMap())
     }
 
     func didFailToShow(rewardedAd: WARewardedAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        sendEvent(withName: RNWortiseRewarded.EVENT_FAILED_TO_SHOW, body: body)
+        sendEvent(withName: RNWortiseRewarded.EVENT_FAILED_TO_SHOW, body: error.toMap())
     }
 
     func didImpress(rewardedAd: WARewardedAd) {
@@ -126,6 +118,10 @@ extension RNWortiseRewarded: WARewardedDelegate {
 
     func didLoad(rewardedAd: WARewardedAd) {
         sendEvent(withName: RNWortiseRewarded.EVENT_LOADED, body: nil)
+    }
+
+    func didPayRevenue(rewardedAd: WARewardedAd, data: WARevenueData) {
+        sendEvent(withName: RNWortiseRewarded.EVENT_REVENUE_PAID, body: data.toMap())
     }
 
     func didShow(rewardedAd: WARewardedAd) {

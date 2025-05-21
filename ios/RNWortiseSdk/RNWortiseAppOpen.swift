@@ -5,13 +5,14 @@ import WortiseSDK
 @objc(RNWortiseAppOpen)
 class RNWortiseAppOpen: RCTEventEmitter {
 
-    fileprivate static let EVENT_CLICKED        = "onAppOpenClicked";
-    fileprivate static let EVENT_DISMISSED      = "onAppOpenDismissed";
-    fileprivate static let EVENT_FAILED_TO_LOAD = "onAppOpenFailedToLoad";
-    fileprivate static let EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow";
-    fileprivate static let EVENT_IMPRESSION     = "onAppOpenImpression";
-    fileprivate static let EVENT_LOADED         = "onAppOpenLoaded";
-    fileprivate static let EVENT_SHOWN          = "onAppOpenShown";
+    fileprivate static let EVENT_CLICKED        = "onAppOpenClicked"
+    fileprivate static let EVENT_DISMISSED      = "onAppOpenDismissed"
+    fileprivate static let EVENT_FAILED_TO_LOAD = "onAppOpenFailedToLoad"
+    fileprivate static let EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow"
+    fileprivate static let EVENT_IMPRESSION     = "onAppOpenImpression"
+    fileprivate static let EVENT_LOADED         = "onAppOpenLoaded"
+    fileprivate static let EVENT_REVENUE_PAID   = "onAppOpenRevenuePaid"
+    fileprivate static let EVENT_SHOWN          = "onAppOpenShown"
 
 
     fileprivate var appOpenAd: WAAppOpenAd?
@@ -25,6 +26,7 @@ class RNWortiseAppOpen: RCTEventEmitter {
             RNWortiseAppOpen.EVENT_FAILED_TO_SHOW,
             RNWortiseAppOpen.EVENT_IMPRESSION,
             RNWortiseAppOpen.EVENT_LOADED,
+            RNWortiseAppOpen.EVENT_REVENUE_PAID,
             RNWortiseAppOpen.EVENT_SHOWN
         ]
     }
@@ -71,12 +73,12 @@ class RNWortiseAppOpen: RCTEventEmitter {
             return
         }
 
-        guard let controller = RCTPresentedViewController() else {
-            resolve(false)
-            return
-        }
-
         DispatchQueue.main.async {
+
+            guard let controller = RCTPresentedViewController() else {
+                resolve(false)
+                return
+            }
 
             appOpenAd.showAd(from: controller)
 
@@ -91,12 +93,12 @@ class RNWortiseAppOpen: RCTEventEmitter {
             return
         }
 
-        guard let controller = RCTPresentedViewController() else {
-            resolve(false)
-            return
-        }
-
         DispatchQueue.main.async {
+
+            guard let controller = RCTPresentedViewController() else {
+                resolve(false)
+                return
+            }
 
             appOpenAd.tryToShowAd(from: controller)
 
@@ -116,21 +118,11 @@ extension RNWortiseAppOpen: WAAppOpenDelegate {
     }
 
     func didFailToLoad(appOpenAd: WAAppOpenAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        sendEvent(withName: RNWortiseAppOpen.EVENT_FAILED_TO_LOAD, body: body)
+        sendEvent(withName: RNWortiseAppOpen.EVENT_FAILED_TO_LOAD, body: error.toMap())
     }
 
     func didFailToShow(appOpenAd: WAAppOpenAd, error: WAAdError) {
-        let body = [
-            "message": error.message,
-            "name":    error.name
-        ]
-
-        sendEvent(withName: RNWortiseAppOpen.EVENT_FAILED_TO_SHOW, body: body)
+        sendEvent(withName: RNWortiseAppOpen.EVENT_FAILED_TO_SHOW, body: error.toMap())
     }
 
     func didImpress(appOpenAd: WAAppOpenAd) {
@@ -139,6 +131,10 @@ extension RNWortiseAppOpen: WAAppOpenDelegate {
 
     func didLoad(appOpenAd: WAAppOpenAd) {
         sendEvent(withName: RNWortiseAppOpen.EVENT_LOADED, body: nil)
+    }
+
+    func didPayRevenue(appOpenAd: WAAppOpenAd, data: WARevenueData) {
+        sendEvent(withName: RNWortiseAppOpen.EVENT_REVENUE_PAID, body: data.toMap())
     }
 
     func didShow(appOpenAd: WAAppOpenAd) {

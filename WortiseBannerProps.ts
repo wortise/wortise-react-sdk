@@ -1,4 +1,5 @@
 import { ViewProps } from 'react-native';
+import { WortiseRevenueData } from './WortiseRevenueData';
 
 export type SizeChangeEvent = {
   width: number;
@@ -19,6 +20,8 @@ export interface WortiseBannerProps extends ViewProps {
   onImpression: () => void;
 
   onLoaded: () => void;
+
+  onRevenuePaid: (data: WortiseRevenueData) => void;
 
   onSizeChange: (event: { nativeEvent: SizeChangeEvent }) => void;
 }
