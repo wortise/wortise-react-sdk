@@ -54,7 +54,7 @@ class RNWortiseDataManager(reactContext: ReactApplicationContext) : ReactContext
     val list = mutableListOf<String>()
 
     for (i in 0 until array.size()) {
-      list.add(array.getString(i))
+      array.getString(i)?.let(list:add)
     }
 
     DataManager.setEmails(reactApplicationContext, list)
