@@ -3,11 +3,18 @@
   "version": "1.7.3",
   "description": "Wortise SDK for React Native",
   "author": "Wortise",
-  "main": "index.ts",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "react-native": "src/index.ts",
+  "types": "lib/typescript/index.d.ts",
   "license": "ISC",
   "scripts": {
+    "build": "bob build",
+    "build:clean": "rimraf android/build && rimraf ios/build && rimraf lib && rimraf plugin/build",
+    "build:plugin": "yarn tsc --build plugin",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore && tsc --noEmit",
     "lint-fix": "eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix",
+    "prepare": "yarn build && yarn build:plugin",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -26,10 +33,44 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-native": "^3.9.1",
+    "expo": "^47.0.0",
+    "expo-module-scripts": "^3.5.2",
     "husky": "^8.0.3",
     "prettier": "^2.1.2",
     "react": "16.13.1",
     "react-native": "^0.63.5",
-    "typescript": "^4.8.4"
-  }
+    "react-native-builder-bob": "^0.20.4",
+    "rimraf": "^3.0.2",
+    "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "expo": ">=47.0.0"
+  },
+  "peerDependenciesMeta": {
+    "expo": {
+      "optional": true
+    }
+  },
+  "files": [
+    "/android/",
+    "/ios/",
+    "/lib/",
+    "/plugin/",
+    "/src/",
+    "/RNWortiseSdk.podspec",
+    "/app.plugin.js"
+  ],
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }
