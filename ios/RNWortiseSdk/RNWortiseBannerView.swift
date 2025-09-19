@@ -92,6 +92,7 @@ class RNWortiseBannerView: UIView {
             return
         }
 
+        bannerAd?.removeFromSuperview()
         bannerAd?.destroy()
         bannerAd = nil
 

@@ -1,5 +1,6 @@
 import { ViewProps } from 'react-native';
 import { WortiseRevenueData } from './WortiseRevenueData';
+import AdSize from './RNWortiseAdSize';
 
 export type SizeChangeEvent = {
   width: number;
@@ -7,7 +8,7 @@ export type SizeChangeEvent = {
 };
 
 export interface WortiseBannerProps extends ViewProps {
-  adSize?: object;
+  adSize?: AdSize;
 
   adUnitId: string;
 

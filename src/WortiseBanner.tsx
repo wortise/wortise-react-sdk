@@ -1,12 +1,15 @@
 import React, { createRef } from 'react';
 import { findNodeHandle, requireNativeComponent, NativeMethods, UIManager } from 'react-native';
 import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
+import AdSize from './RNWortiseAdSize';
+
+type WortiseBannerStyle = {
+  width?: number | string;
+  height?: number | string;
+};
 
 type WortiseBannerState = {
-  style: {
-    width?: number;
-    height?: number;
-  };
+  style: WortiseBannerStyle;
 };
 
 type WortiseBannerView = React.Component<WortiseBannerProps> & NativeMethods;
@@ -32,15 +35,27 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     return 0;
   }
 
+  private adSize: AdSize;
+
   ref = createRef<WortiseBannerView>();
 
   constructor(props: WortiseBannerProps) {
     super(props);
 
+    this.adSize = props.adSize || AdSize.HEIGHT_50;
+
     this.handleSizeChange = this.handleSizeChange.bind(this);
 
+    const style: WortiseBannerStyle = {};
+
+    if (this.adSize.height > 0) {
+      style.height = this.adSize.height;
+    }
+
+    style.width = this.adSize.width > 0 ? this.adSize.width : '100%';
+
     this.state = {
-      style: {},
+      style,
     };
   }
 
@@ -62,6 +77,7 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     return (
       <RNWortiseBanner
         {...this.props}
+        adSize={this.adSize}
         onSizeChange={this.handleSizeChange}
         ref={this.ref}
         style={[this.props.style, this.state.style]}
