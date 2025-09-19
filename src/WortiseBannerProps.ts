@@ -14,15 +14,15 @@ export interface WortiseBannerProps extends ViewProps {
 
   autoRefreshTime?: number;
 
-  onClicked: () => void;
+  onClicked?: () => void;
 
-  onFailed: (error: { message: string; name: string }) => void;
+  onFailedToLoad?: (error: { message: string; name: string }) => void;
 
-  onImpression: () => void;
+  onImpression?: () => void;
 
-  onLoaded: () => void;
+  onLoaded?: () => void;
 
-  onRevenuePaid: (data: WortiseRevenueData) => void;
+  onRevenuePaid?: (data: WortiseRevenueData) => void;
 
-  onSizeChange: (event: { nativeEvent: SizeChangeEvent }) => void;
+  onSizeChange?: (event: { nativeEvent: SizeChangeEvent }) => void;
 }

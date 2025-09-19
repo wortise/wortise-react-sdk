@@ -63,6 +63,18 @@ RCT_EXPORT_VIEW_PROPERTY(adUnitId, NSString)
 
 RCT_EXPORT_VIEW_PROPERTY(autoRefreshTime, NSNumber)
 
+RCT_EXPORT_VIEW_PROPERTY(onClicked, RCTBubblingEventBlock)
+
+RCT_EXPORT_VIEW_PROPERTY(onFailedToLoad, RCTBubblingEventBlock)
+
+RCT_EXPORT_VIEW_PROPERTY(onImpression, RCTBubblingEventBlock)
+
+RCT_EXPORT_VIEW_PROPERTY(onLoaded, RCTBubblingEventBlock)
+
+RCT_EXPORT_VIEW_PROPERTY(onRevenuePaid, RCTBubblingEventBlock)
+
+RCT_EXPORT_VIEW_PROPERTY(onSizeChange, RCTBubblingEventBlock)
+
 @end
 
 @interface RCT_EXTERN_MODULE(RNWortiseConsentManager, NSObject)
