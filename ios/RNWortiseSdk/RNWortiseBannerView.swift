@@ -64,6 +64,7 @@ class RNWortiseBannerView: UIView {
     }
 
     deinit {
+        bannerAd?.removeFromSuperview()
         bannerAd?.destroy()
         bannerAd = nil
     }
@@ -129,9 +130,14 @@ extension RNWortiseBannerView: WABannerDelegate {
     func didLoad(bannerAd: WABannerAd) {
         onLoaded?([:])
 
+        let height = bannerAd.adHeight
+        let width  = bannerAd.adWidth
+
+        bannerAd.frame = CGRect(x: 0, y: 0, width: width, height: height)
+
         let body = [
-            "height": bannerAd.adSize.height,
-            "width":  bannerAd.adSize.width
+            "height": height,
+            "width":  width
         ]
 
         onSizeChange?(body)
