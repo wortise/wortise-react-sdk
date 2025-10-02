@@ -17,5 +17,5 @@ Pod::Spec.new do |spec|
   spec.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 
   spec.dependency   "React-Core"
-  spec.dependency   "WortiseSDK", '1.7.0'
+  spec.dependency   "WortiseSDK", '1.7.1'
 end
