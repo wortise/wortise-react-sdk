@@ -54,7 +54,7 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
 
   @ReactMethod
   fun setAdUnitId(adUnitId: String) {
-    val currentActivity = currentActivity ?: return
+    val currentActivity = reactApplicationContext.currentActivity ?: return
 
     destroy()
 
@@ -71,6 +71,8 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
       promise.resolve(false)
       return
     }
+
+    val currentActivity = reactApplicationContext.currentActivity
 
     currentActivity?.let(interstitialAd::showAd) ?: interstitialAd.showAd()
 

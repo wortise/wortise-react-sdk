@@ -29,7 +29,7 @@ class RNWortiseConsentManager(reactContext: ReactApplicationContext) : ReactCont
 
   @ReactMethod
   fun request(promise: Promise) {
-    val currentActivity = currentActivity
+    val currentActivity = reactApplicationContext.currentActivity
 
     if (currentActivity == null) {
       promise.resolve(false)
@@ -43,7 +43,7 @@ class RNWortiseConsentManager(reactContext: ReactApplicationContext) : ReactCont
 
   @ReactMethod
   fun requestIfRequired(promise: Promise) {
-    val currentActivity = currentActivity
+    val currentActivity = reactApplicationContext.currentActivity
 
     if (currentActivity == null) {
       promise.resolve(false)

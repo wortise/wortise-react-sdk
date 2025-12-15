@@ -30,8 +30,8 @@ class RNWortiseAdSettings(reactContext: ReactApplicationContext) : ReactContextB
   }
 
   @ReactMethod
-  fun isTestEnabled(): Boolean {
-    return AdSettings.testEnabled
+  fun isTestEnabled(promise: Promise) {
+    promise.resolve(AdSettings.testEnabled)
   }
 
   @ReactMethod

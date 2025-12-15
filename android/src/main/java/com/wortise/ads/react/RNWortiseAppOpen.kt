@@ -54,7 +54,7 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
 
   @ReactMethod
   fun setAdUnitId(adUnitId: String) {
-    val currentActivity = currentActivity ?: return
+    val currentActivity = reactApplicationContext.currentActivity ?: return
 
     destroy()
 
@@ -77,6 +77,8 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
       return
     }
 
+    val currentActivity = reactApplicationContext.currentActivity
+
     currentActivity?.let(appOpenAd::showAd) ?: appOpenAd.showAd()
 
     promise.resolve(true)
@@ -90,6 +92,8 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
         promise.resolve(false)
         return
     }
+
+    val currentActivity = reactApplicationContext.currentActivity
 
     appOpenAd.tryToShowAd(currentActivity)
 

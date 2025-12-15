@@ -55,7 +55,7 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
 
   @ReactMethod
   fun setAdUnitId(adUnitId: String) {
-    val currentActivity = currentActivity ?: return
+    val currentActivity = reactApplicationContext.currentActivity ?: return
 
     destroy()
 
@@ -72,6 +72,8 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
       promise.resolve(false)
       return
     }
+
+    val currentActivity = reactApplicationContext.currentActivity
 
     currentActivity?.let(rewardedAd::showAd) ?: rewardedAd.showAd()
 
