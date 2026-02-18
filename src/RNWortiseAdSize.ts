@@ -9,25 +9,15 @@ class AdSize {
     this.type = type ?? 'normal';
   }
 
-  static get HEIGHT_50() {
-    return new AdSize(-1, 50);
-  }
+  static readonly HEIGHT_50 = new AdSize(-1, 50);
 
-  static get HEIGHT_90() {
-    return new AdSize(-1, 90);
-  }
+  static readonly HEIGHT_90 = new AdSize(-1, 90);
 
-  static get HEIGHT_250() {
-    return new AdSize(-1, 250);
-  }
+  static readonly HEIGHT_250 = new AdSize(-1, 250);
 
-  static get HEIGHT_280() {
-    return new AdSize(-1, 280);
-  }
+  static readonly HEIGHT_280 = new AdSize(-1, 280);
 
-  static get MATCH_VIEW() {
-    return new AdSize(-1, -1);
-  }
+  static readonly MATCH_VIEW = new AdSize(-1, -1);
 
   static getAnchoredAdaptiveBannerAdSize(width: number) {
     return new AdSize(width, -1, 'anchored');

@@ -1,8 +1,22 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { EmitterSubscription, NativeEventEmitter, NativeModules } from 'react-native';
+import { WortiseRevenueData } from './WortiseRevenueData';
 
 const { RNWortiseAppOpen } = NativeModules;
 
 const emitter = new NativeEventEmitter(RNWortiseAppOpen);
+
+type AppOpenEventMap = {
+  onAppOpenClicked: null;
+  onAppOpenDismissed: null;
+  onAppOpenFailedToLoad: { message: string; name: string };
+  onAppOpenFailedToShow: { message: string; name: string };
+  onAppOpenImpression: null;
+  onAppOpenLoaded: null;
+  onAppOpenRevenuePaid: WortiseRevenueData;
+  onAppOpenShown: null;
+};
+
+export type AppOpenEvent = keyof AppOpenEventMap;
 
 export default {
   get isAvailable() {
@@ -13,8 +27,11 @@ export default {
     return RNWortiseAppOpen.isShowing();
   },
 
-  addEventListener(eventType: string, handler: (event: object) => void) {
-    emitter.addListener(eventType, handler);
+  addEventListener<K extends AppOpenEvent>(
+    eventType: K,
+    handler: (event: AppOpenEventMap[K]) => void,
+  ): EmitterSubscription {
+    return emitter.addListener(eventType, handler);
   },
 
   destroy() {
@@ -25,7 +42,7 @@ export default {
     RNWortiseAppOpen.loadAd();
   },
 
-  removeAllListeners(eventType: string) {
+  removeAllListeners(eventType: AppOpenEvent) {
     emitter.removeAllListeners(eventType);
   },
 
@@ -38,10 +55,10 @@ export default {
   },
 
   showAd() {
-    RNWortiseAppOpen.showAd();
+    return RNWortiseAppOpen.showAd();
   },
 
   tryToShowAd() {
-    RNWortiseAppOpen.tryToShowAd();
+    return RNWortiseAppOpen.tryToShowAd();
   },
 };

@@ -19,3 +19,15 @@ export { default as RNWortiseSdk } from './RNWortiseSdk';
 export { default as RNWortiseUserGender } from './RNWortiseUserGender';
 
 export { default as WortiseBanner } from './WortiseBanner';
+
+export type { AppOpenEvent } from './RNWortiseAppOpen';
+
+export type { InterstitialEvent } from './RNWortiseInterstitial';
+
+export type { RewardedEvent } from './RNWortiseRewarded';
+
+export type { WortiseAdValue } from './WortiseAdValue';
+
+export type { WortiseRevenueData } from './WortiseRevenueData';
+
+export type { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';

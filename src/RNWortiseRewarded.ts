@@ -1,8 +1,23 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { EmitterSubscription, NativeEventEmitter, NativeModules } from 'react-native';
+import { WortiseRevenueData } from './WortiseRevenueData';
 
 const { RNWortiseRewarded } = NativeModules;
 
 const emitter = new NativeEventEmitter(RNWortiseRewarded);
+
+type RewardedEventMap = {
+  onRewardedClicked: null;
+  onRewardedCompleted: { amount: number; label: string; success: boolean };
+  onRewardedDismissed: null;
+  onRewardedFailedToLoad: { message: string; name: string };
+  onRewardedFailedToShow: { message: string; name: string };
+  onRewardedImpression: null;
+  onRewardedLoaded: null;
+  onRewardedRevenuePaid: WortiseRevenueData;
+  onRewardedShown: null;
+};
+
+export type RewardedEvent = keyof RewardedEventMap;
 
 export default {
   get isAvailable() {
@@ -13,8 +28,11 @@ export default {
     return RNWortiseRewarded.isShowing();
   },
 
-  addEventListener(eventType: string, handler: (event: object) => void) {
-    emitter.addListener(eventType, handler);
+  addEventListener<K extends RewardedEvent>(
+    eventType: K,
+    handler: (event: RewardedEventMap[K]) => void,
+  ): EmitterSubscription {
+    return emitter.addListener(eventType, handler);
   },
 
   destroy() {
@@ -25,7 +43,7 @@ export default {
     RNWortiseRewarded.loadAd();
   },
 
-  removeAllListeners(eventType: string) {
+  removeAllListeners(eventType: RewardedEvent) {
     emitter.removeAllListeners(eventType);
   },
 
@@ -34,6 +52,6 @@ export default {
   },
 
   showAd() {
-    RNWortiseRewarded.showAd();
+    return RNWortiseRewarded.showAd();
   },
 };

@@ -24,6 +24,11 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
   private var rewardedAd: RewardedAd? = null
 
 
+  init {
+    reactContext.addLifecycleEventListener(this)
+  }
+
+
   override fun getName(): String = "RNWortiseRewarded"
 
   @ReactMethod
@@ -55,11 +60,9 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
 
   @ReactMethod
   fun setAdUnitId(adUnitId: String) {
-    val currentActivity = reactApplicationContext.currentActivity ?: return
-
     destroy()
 
-    rewardedAd = RewardedAd(currentActivity, adUnitId).also {
+    rewardedAd = RewardedAd(reactApplicationContext.currentActivity ?: reactApplicationContext, adUnitId).also {
       it.listener = this
     }
   }

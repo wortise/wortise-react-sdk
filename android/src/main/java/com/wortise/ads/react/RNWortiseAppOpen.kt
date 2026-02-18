@@ -23,6 +23,11 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   private var appOpenAd: AppOpenAd? = null
 
 
+  init {
+    reactContext.addLifecycleEventListener(this)
+  }
+
+
   override fun getName(): String = "RNWortiseAppOpen"
 
   @ReactMethod
@@ -54,11 +59,9 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
 
   @ReactMethod
   fun setAdUnitId(adUnitId: String) {
-    val currentActivity = reactApplicationContext.currentActivity ?: return
-
     destroy()
 
-    appOpenAd = AppOpenAd(currentActivity, adUnitId).also {
+    appOpenAd = AppOpenAd(reactApplicationContext.currentActivity ?: reactApplicationContext, adUnitId).also {
       it.listener = this
     }
   }

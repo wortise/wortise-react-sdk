@@ -1,8 +1,22 @@
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { EmitterSubscription, NativeEventEmitter, NativeModules } from 'react-native';
+import { WortiseRevenueData } from './WortiseRevenueData';
 
 const { RNWortiseInterstitial } = NativeModules;
 
 const emitter = new NativeEventEmitter(RNWortiseInterstitial);
+
+type InterstitialEventMap = {
+  onInterstitialClicked: null;
+  onInterstitialDismissed: null;
+  onInterstitialFailedToLoad: { message: string; name: string };
+  onInterstitialFailedToShow: { message: string; name: string };
+  onInterstitialImpression: null;
+  onInterstitialLoaded: null;
+  onInterstitialRevenuePaid: WortiseRevenueData;
+  onInterstitialShown: null;
+};
+
+export type InterstitialEvent = keyof InterstitialEventMap;
 
 export default {
   get isAvailable() {
@@ -13,8 +27,11 @@ export default {
     return RNWortiseInterstitial.isShowing();
   },
 
-  addEventListener(eventType: string, handler: (event: object) => void) {
-    emitter.addListener(eventType, handler);
+  addEventListener<K extends InterstitialEvent>(
+    eventType: K,
+    handler: (event: InterstitialEventMap[K]) => void,
+  ): EmitterSubscription {
+    return emitter.addListener(eventType, handler);
   },
 
   destroy() {
@@ -25,7 +42,7 @@ export default {
     RNWortiseInterstitial.loadAd();
   },
 
-  removeAllListeners(eventType: string) {
+  removeAllListeners(eventType: InterstitialEvent) {
     emitter.removeAllListeners(eventType);
   },
 
@@ -34,6 +51,6 @@ export default {
   },
 
   showAd() {
-    RNWortiseInterstitial.showAd();
+    return RNWortiseInterstitial.showAd();
   },
 };

@@ -17,9 +17,20 @@
     "react",
     "react-native"
   ],
+  "rules": {
+    "react/prop-types": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    }
+  ],
   "settings": {
     "react": {
-      "version": "16.2.0"
+      "version": "detect"
     }
   }
 }

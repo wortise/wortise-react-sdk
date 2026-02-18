@@ -24,7 +24,7 @@ export default {
     RNWortiseDataManager.setAge(age);
   },
 
-  setEmails(list?: [string]) {
+  setEmails(list?: string[]) {
     RNWortiseDataManager.setEmails(list);
   },
 

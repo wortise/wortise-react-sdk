@@ -23,6 +23,11 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
   private var interstitialAd: InterstitialAd? = null
 
 
+  init {
+    reactContext.addLifecycleEventListener(this)
+  }
+
+
   override fun getName(): String = "RNWortiseInterstitial"
 
   @ReactMethod
@@ -54,11 +59,9 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
 
   @ReactMethod
   fun setAdUnitId(adUnitId: String) {
-    val currentActivity = reactApplicationContext.currentActivity ?: return
-
     destroy()
 
-    interstitialAd = InterstitialAd(currentActivity, adUnitId).also {
+    interstitialAd = InterstitialAd(reactApplicationContext.currentActivity ?: reactApplicationContext, adUnitId).also {
       it.listener = this
     }
   }

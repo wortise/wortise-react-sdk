@@ -35,28 +35,31 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     return 0;
   }
 
-  private adSize: AdSize;
-
   ref = createRef<WortiseBannerView>();
 
   constructor(props: WortiseBannerProps) {
     super(props);
 
-    this.adSize = props.adSize || AdSize.HEIGHT_50;
-
     this.handleSizeChange = this.handleSizeChange.bind(this);
 
-    const style: WortiseBannerStyle = {};
+    const style = WortiseBanner.computeStyle(props.adSize);
 
-    if (this.adSize.height > 0) {
-      style.height = this.adSize.height;
+    this.state = { style };
+  }
+
+  componentDidUpdate(prevProps: WortiseBannerProps) {
+    const prevAdSize = prevProps.adSize || AdSize.HEIGHT_50;
+    const nextAdSize = this.props.adSize || AdSize.HEIGHT_50;
+
+    if (
+      prevAdSize.width !== nextAdSize.width ||
+      prevAdSize.height !== nextAdSize.height ||
+      prevAdSize.type !== nextAdSize.type
+    ) {
+      const style = WortiseBanner.computeStyle(this.props.adSize);
+
+      this.setState({ style });
     }
-
-    style.width = this.adSize.width > 0 ? this.adSize.width : '100%';
-
-    this.state = {
-      style,
-    };
   }
 
   handleSizeChange(event: { nativeEvent: SizeChangeEvent }) {
@@ -74,15 +77,31 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   }
 
   render() {
+    const adSize = this.props.adSize || AdSize.HEIGHT_50;
+
     return (
       <RNWortiseBanner
         {...this.props}
-        adSize={this.adSize}
+        adSize={adSize}
         onSizeChange={this.handleSizeChange}
         ref={this.ref}
         style={[this.props.style, this.state.style]}
       />
     );
+  }
+
+  private static computeStyle(adSize?: AdSize): WortiseBannerStyle {
+    const size = adSize || AdSize.HEIGHT_50;
+
+    const style: WortiseBannerStyle = {};
+
+    if (size.height > 0) {
+      style.height = size.height;
+    }
+
+    style.width = size.width > 0 ? size.width : '100%';
+
+    return style;
   }
 }
 
