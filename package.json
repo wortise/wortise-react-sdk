@@ -56,6 +56,8 @@
     "!android/.gradle",
     "!android/build",
     "/ios/",
+    "!ios/RNWortiseSdk/**/xcuserdata/**",
+    "!ios/RNWortiseSdk/**/*.xcuserdatad/**",
     "/lib/",
     "/plugin/",
     "/src/",
