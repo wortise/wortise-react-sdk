@@ -14,11 +14,13 @@ class RNWortisePackage : ReactPackage {
     RNWortiseConsentManager(reactContext),
     RNWortiseDataManager   (reactContext),
     RNWortiseInterstitial  (reactContext),
+    RNWortiseNativeAdLoader(reactContext),
     RNWortiseRewarded      (reactContext),
     RNWortiseSdk           (reactContext)
   )
 
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> = listOf(
-    RNWortiseBanner()
+    RNWortiseBanner(),
+    RNWortiseNativeAdView()
   )
 }

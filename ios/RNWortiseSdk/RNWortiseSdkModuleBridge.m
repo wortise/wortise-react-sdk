@@ -155,6 +155,24 @@ RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
 
 @end
 
+@interface RCT_EXTERN_MODULE(RNWortiseNativeAdLoader, RCTEventEmitter)
+
+RCT_EXTERN_METHOD(destroyAd:(NSString *)responseId)
+
+RCT_EXTERN_METHOD(loadAd:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+@end
+
+@interface RCT_EXTERN_MODULE(RNWortiseNativeAdView, RCTViewManager)
+
+RCT_EXPORT_VIEW_PROPERTY(factoryId, NSString)
+
+RCT_EXPORT_VIEW_PROPERTY(responseId, NSString)
+
+@end
+
 @interface RCT_EXTERN_MODULE(RNWortiseSdk, NSObject)
 
 RCT_EXTERN_METHOD(getVersion:(RCTPromiseResolveBlock)resolve
