@@ -569,5 +569,8 @@ website/public
 # generated files by bob
 lib/
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 .yarn
 package-lock.json
