@@ -34,6 +34,11 @@ class RNWortiseRewarded: RCTEventEmitter {
     }
     
 
+    @objc(cooldownRemainingMs:reject:)
+    func cooldownRemainingMs(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(Int((rewardedAd?.cooldownRemaining ?? 0) * 1000))
+    }
+
     @objc
     func destroy() {
         rewardedAd?.destroy()
@@ -43,6 +48,11 @@ class RNWortiseRewarded: RCTEventEmitter {
     @objc(isAvailable:reject:)
     func isAvailable(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(rewardedAd?.isAvailable ?? false)
+    }
+
+    @objc(isInCooldown:reject:)
+    func isInCooldown(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(rewardedAd?.isInCooldown ?? false)
     }
 
     @objc(isShowing:reject:)

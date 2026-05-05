@@ -19,8 +19,16 @@ type AppOpenEventMap = {
 export type AppOpenEvent = keyof AppOpenEventMap;
 
 export default {
+  get cooldownRemainingMs() {
+    return RNWortiseAppOpen.cooldownRemainingMs();
+  },
+
   get isAvailable() {
     return RNWortiseAppOpen.isAvailable();
+  },
+
+  get isInCooldown() {
+    return RNWortiseAppOpen.isInCooldown();
   },
 
   get isShowing() {

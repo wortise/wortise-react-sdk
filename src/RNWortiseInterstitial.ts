@@ -19,8 +19,16 @@ type InterstitialEventMap = {
 export type InterstitialEvent = keyof InterstitialEventMap;
 
 export default {
+  get cooldownRemainingMs() {
+    return RNWortiseInterstitial.cooldownRemainingMs();
+  },
+
   get isAvailable() {
     return RNWortiseInterstitial.isAvailable();
+  },
+
+  get isInCooldown() {
+    return RNWortiseInterstitial.isInCooldown();
   },
 
   get isShowing() {

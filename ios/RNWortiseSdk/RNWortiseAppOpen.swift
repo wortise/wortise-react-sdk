@@ -32,6 +32,11 @@ class RNWortiseAppOpen: RCTEventEmitter {
     }
     
 
+    @objc(cooldownRemainingMs:reject:)
+    func cooldownRemainingMs(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(Int((appOpenAd?.cooldownRemaining ?? 0) * 1000))
+    }
+
     @objc
     func destroy() {
         appOpenAd?.destroy()
@@ -41,6 +46,11 @@ class RNWortiseAppOpen: RCTEventEmitter {
     @objc(isAvailable:reject:)
     func isAvailable(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(appOpenAd?.isAvailable ?? false)
+    }
+
+    @objc(isInCooldown:reject:)
+    func isInCooldown(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(appOpenAd?.isInCooldown ?? false)
     }
 
     @objc(isShowing:reject:)

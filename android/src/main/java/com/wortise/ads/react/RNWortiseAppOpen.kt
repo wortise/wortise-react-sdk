@@ -34,6 +34,11 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   fun addListener(eventName: String) {}
 
   @ReactMethod
+  fun cooldownRemainingMs(promise: Promise) {
+    promise.resolve(appOpenAd?.cooldownRemainingMs?.toDouble() ?: 0.0)
+  }
+
+  @ReactMethod
   fun destroy() {
     appOpenAd?.destroy()
     appOpenAd = null
@@ -42,6 +47,11 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   @ReactMethod
   fun isAvailable(promise: Promise) {
     promise.resolve(appOpenAd?.isAvailable == true)
+  }
+
+  @ReactMethod
+  fun isInCooldown(promise: Promise) {
+    promise.resolve(appOpenAd?.isInCooldown == true)
   }
 
   @ReactMethod

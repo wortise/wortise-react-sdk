@@ -35,6 +35,11 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
   fun addListener(eventName: String) {}
 
   @ReactMethod
+  fun cooldownRemainingMs(promise: Promise) {
+    promise.resolve(rewardedAd?.cooldownRemainingMs?.toDouble() ?: 0.0)
+  }
+
+  @ReactMethod
   fun destroy() {
     rewardedAd?.destroy()
     rewardedAd = null
@@ -43,6 +48,11 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
   @ReactMethod
   fun isAvailable(promise: Promise) {
     promise.resolve(rewardedAd?.isAvailable == true)
+  }
+
+  @ReactMethod
+  fun isInCooldown(promise: Promise) {
+    promise.resolve(rewardedAd?.isInCooldown == true)
   }
 
   @ReactMethod

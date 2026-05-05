@@ -31,11 +31,17 @@ RCT_EXTERN_METHOD(setUserId:(NSString *)userId)
 
 @interface RCT_EXTERN_MODULE(RNWortiseAppOpen, RCTEventEmitter)
 
+RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(destroy)
 
 RCT_EXTERN_METHOD(loadAd)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
@@ -119,11 +125,17 @@ RCT_EXTERN_METHOD(setGender:(NSString *)gender)
 
 @interface RCT_EXTERN_MODULE(RNWortiseInterstitial, RCTEventEmitter)
 
+RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(destroy)
 
 RCT_EXTERN_METHOD(loadAd)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
@@ -138,11 +150,17 @@ RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
 
 @interface RCT_EXTERN_MODULE(RNWortiseRewarded, RCTEventEmitter)
 
+RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(destroy)
 
 RCT_EXTERN_METHOD(loadAd)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve

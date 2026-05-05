@@ -20,8 +20,16 @@ type RewardedEventMap = {
 export type RewardedEvent = keyof RewardedEventMap;
 
 export default {
+  get cooldownRemainingMs() {
+    return RNWortiseRewarded.cooldownRemainingMs();
+  },
+
   get isAvailable() {
     return RNWortiseRewarded.isAvailable();
+  },
+
+  get isInCooldown() {
+    return RNWortiseRewarded.isInCooldown();
   },
 
   get isShowing() {

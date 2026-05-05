@@ -32,6 +32,12 @@ class RNWortiseInterstitial: RCTEventEmitter {
     }
     
 
+
+    @objc(cooldownRemainingMs:reject:)
+    func cooldownRemainingMs(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(Int((interstitialAd?.cooldownRemaining ?? 0) * 1000))
+    }
+
     @objc
     func destroy() {
         interstitialAd?.destroy()
@@ -41,6 +47,11 @@ class RNWortiseInterstitial: RCTEventEmitter {
     @objc(isAvailable:reject:)
     func isAvailable(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(interstitialAd?.isAvailable ?? false)
+    }
+
+    @objc(isInCooldown:reject:)
+    func isInCooldown(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(interstitialAd?.isInCooldown ?? false)
     }
 
     @objc(isShowing:reject:)

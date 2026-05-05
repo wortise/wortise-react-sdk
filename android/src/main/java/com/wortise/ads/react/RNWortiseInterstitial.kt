@@ -34,6 +34,11 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
   fun addListener(eventName: String) {}
 
   @ReactMethod
+  fun cooldownRemainingMs(promise: Promise) {
+    promise.resolve(interstitialAd?.cooldownRemainingMs?.toDouble() ?: 0.0)
+  }
+
+  @ReactMethod
   fun destroy() {
     interstitialAd?.destroy()
     interstitialAd = null
@@ -42,6 +47,11 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
   @ReactMethod
   fun isAvailable(promise: Promise) {
     promise.resolve(interstitialAd?.isAvailable == true)
+  }
+
+  @ReactMethod
+  fun isInCooldown(promise: Promise) {
+    promise.resolve(interstitialAd?.isInCooldown == true)
   }
 
   @ReactMethod
