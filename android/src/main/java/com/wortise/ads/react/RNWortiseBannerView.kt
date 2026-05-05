@@ -1,6 +1,7 @@
 package com.wortise.ads.react
 
 import android.content.Context
+import android.view.View.MeasureSpec
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
@@ -66,9 +67,12 @@ class RNWortiseBannerView(private val reactContext: ReactContext) : BannerAd(rea
 
   override fun onBannerLoaded(ad: BannerAd) {
     val height = adHeightPx
-    val width  = adWidthPx 
+    val width  = adWidthPx
 
-    measure(width, height)
+    measure(
+      MeasureSpec.makeMeasureSpec(width,  MeasureSpec.EXACTLY),
+      MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+    )
 
     layout(left, top, left + width, top + height)
 

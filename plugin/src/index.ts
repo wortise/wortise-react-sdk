@@ -22,10 +22,26 @@ const MAVEN_URLS = [
 function addMavenRepository(gradle: string, url: string): string {
   if (gradle.includes(url)) return gradle;
 
-  return gradle.replace(
-    /allprojects\s*{[^]*?repositories\s*{/,
-    match => `${match}\n        maven { url "${url}" }`,
+  const allprojectsRegex = /allprojects\s*{[^]*?repositories\s*{/;
+  const dependencyResolutionRegex = /dependencyResolutionManagement\s*{[^]*?repositories\s*{/;
+
+  if (allprojectsRegex.test(gradle)) {
+    return gradle.replace(allprojectsRegex, match => `${match}\n        maven { url "${url}" }`);
+  }
+
+  if (dependencyResolutionRegex.test(gradle)) {
+    return gradle.replace(
+      dependencyResolutionRegex,
+      match => `${match}\n        maven { url "${url}" }`,
+    );
+  }
+
+  console.warn(
+    `Could not inject maven repository '${url}' into build.gradle. ` +
+      'Add it manually under allprojects { repositories { ... } }.',
   );
+
+  return gradle;
 }
 
 function addMavenRepositories(gradle: string): string {

@@ -5,6 +5,12 @@ import WortiseSDK
 @objc(RNWortiseSdk)
 class RNWortiseSdk: NSObject {
 
+    @objc
+    static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     @objc(getVersion:reject:)
     func getVersion(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(WortiseAds.shared.version)

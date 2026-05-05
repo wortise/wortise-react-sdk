@@ -18,6 +18,11 @@ class RNWortiseInterstitial: RCTEventEmitter {
     fileprivate var interstitialAd: WAInterstitialAd?
 
 
+    override static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     override func supportedEvents() -> [String]! {
         return [
             RNWortiseInterstitial.EVENT_CLICKED,
@@ -34,54 +39,69 @@ class RNWortiseInterstitial: RCTEventEmitter {
 
 
     @objc(cooldownRemainingMs:reject:)
-    func cooldownRemainingMs(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(Int((interstitialAd?.cooldownRemaining ?? 0) * 1000))
+    func cooldownRemainingMs(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(Int((self?.interstitialAd?.cooldownRemaining ?? 0) * 1000))
+        }
     }
 
     @objc
     func destroy() {
-        interstitialAd?.destroy()
-        interstitialAd = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.interstitialAd?.destroy()
+            self?.interstitialAd = nil
+        }
     }
 
     @objc(isAvailable:reject:)
-    func isAvailable(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(interstitialAd?.isAvailable ?? false)
+    func isAvailable(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.interstitialAd?.isAvailable ?? false)
+        }
     }
 
     @objc(isInCooldown:reject:)
-    func isInCooldown(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(interstitialAd?.isInCooldown ?? false)
+    func isInCooldown(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.interstitialAd?.isInCooldown ?? false)
+        }
     }
 
     @objc(isShowing:reject:)
-    func isShowing(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(interstitialAd?.isShowing ?? false)
+    func isShowing(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.interstitialAd?.isShowing ?? false)
+        }
     }
 
     @objc
     func loadAd() {
-        interstitialAd?.loadAd()
+        DispatchQueue.main.async { [weak self] in
+            self?.interstitialAd?.loadAd()
+        }
     }
 
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
-        destroy()
+        DispatchQueue.main.async { [weak self] in
 
-        interstitialAd = WAInterstitialAd(adUnitId: adUnitId)
-        interstitialAd?.delegate = self
+            guard let self = self else {
+                return
+            }
+
+            self.interstitialAd?.destroy()
+
+            self.interstitialAd = WAInterstitialAd(adUnitId: adUnitId)
+            self.interstitialAd?.delegate = self
+        }
     }
 
     @objc(showAd:reject:)
     func showAd(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let interstitialAd = interstitialAd else {
-            resolve(false)
-            return
-        }
+        DispatchQueue.main.async { [weak self] in
 
-        DispatchQueue.main.async {
-
-            guard let controller = RCTPresentedViewController() else {
+            guard let interstitialAd = self?.interstitialAd,
+                  let controller = RCTPresentedViewController() else {
                 resolve(false)
                 return
             }

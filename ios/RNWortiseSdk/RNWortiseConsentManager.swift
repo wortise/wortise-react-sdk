@@ -5,6 +5,12 @@ import WortiseSDK
 @objc(RNWortiseConsentManager)
 class RNWortiseConsentManager: NSObject {
 
+    @objc
+    static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     @objc(canCollectData:reject:)
     func canCollectData(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(WAConsentManager.shared.canCollectData)

@@ -1,6 +1,5 @@
 package com.wortise.ads.react
 
-import android.app.Activity
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -9,9 +8,6 @@ import com.facebook.react.bridge.ReadableArray
 import com.wortise.ads.data.DataManager
 import com.wortise.ads.extensions.tryOrNull
 import com.wortise.ads.user.UserGender
-import java.lang.Integer
-import java.util.ArrayList
-import java.util.List
 
 class RNWortiseDataManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -50,7 +46,12 @@ class RNWortiseDataManager(reactContext: ReactApplicationContext) : ReactContext
   }
 
   @ReactMethod
-  fun setEmails(array: ReadableArray) {
+  fun setEmails(array: ReadableArray?) {
+    if (array == null) {
+      DataManager.setEmails(reactApplicationContext, emptyList())
+      return
+    }
+
     val list = mutableListOf<String>()
 
     for (i in 0 until array.size()) {

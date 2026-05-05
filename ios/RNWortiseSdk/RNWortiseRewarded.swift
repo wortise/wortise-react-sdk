@@ -19,6 +19,11 @@ class RNWortiseRewarded: RCTEventEmitter {
     fileprivate var rewardedAd: WARewardedAd?
 
 
+    override static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     override func supportedEvents() -> [String]! {
         return [
             RNWortiseRewarded.EVENT_CLICKED,
@@ -35,54 +40,69 @@ class RNWortiseRewarded: RCTEventEmitter {
     
 
     @objc(cooldownRemainingMs:reject:)
-    func cooldownRemainingMs(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(Int((rewardedAd?.cooldownRemaining ?? 0) * 1000))
+    func cooldownRemainingMs(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(Int((self?.rewardedAd?.cooldownRemaining ?? 0) * 1000))
+        }
     }
 
     @objc
     func destroy() {
-        rewardedAd?.destroy()
-        rewardedAd = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.rewardedAd?.destroy()
+            self?.rewardedAd = nil
+        }
     }
 
     @objc(isAvailable:reject:)
-    func isAvailable(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(rewardedAd?.isAvailable ?? false)
+    func isAvailable(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.rewardedAd?.isAvailable ?? false)
+        }
     }
 
     @objc(isInCooldown:reject:)
-    func isInCooldown(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(rewardedAd?.isInCooldown ?? false)
+    func isInCooldown(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.rewardedAd?.isInCooldown ?? false)
+        }
     }
 
     @objc(isShowing:reject:)
-    func isShowing(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(rewardedAd?.isShowing ?? false)
+    func isShowing(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.rewardedAd?.isShowing ?? false)
+        }
     }
 
     @objc
     func loadAd() {
-        rewardedAd?.loadAd()
+        DispatchQueue.main.async { [weak self] in
+            self?.rewardedAd?.loadAd()
+        }
     }
 
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
-        destroy()
+        DispatchQueue.main.async { [weak self] in
 
-        rewardedAd = WARewardedAd(adUnitId: adUnitId)
-        rewardedAd?.delegate = self
+            guard let self = self else {
+                return
+            }
+
+            self.rewardedAd?.destroy()
+
+            self.rewardedAd = WARewardedAd(adUnitId: adUnitId)
+            self.rewardedAd?.delegate = self
+        }
     }
 
     @objc(showAd:reject:)
     func showAd(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let rewardedAd = rewardedAd else {
-            resolve(false)
-            return
-        }
+        DispatchQueue.main.async { [weak self] in
 
-        DispatchQueue.main.async {
-
-            guard let controller = RCTPresentedViewController() else {
+            guard let rewardedAd = self?.rewardedAd,
+                  let controller = RCTPresentedViewController() else {
                 resolve(false)
                 return
             }

@@ -18,6 +18,11 @@ class RNWortiseAppOpen: RCTEventEmitter {
     fileprivate var appOpenAd: WAAppOpenAd?
 
 
+    override static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     override func supportedEvents() -> [String]! {
         return [
             RNWortiseAppOpen.EVENT_CLICKED,
@@ -33,59 +38,76 @@ class RNWortiseAppOpen: RCTEventEmitter {
     
 
     @objc(cooldownRemainingMs:reject:)
-    func cooldownRemainingMs(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(Int((appOpenAd?.cooldownRemaining ?? 0) * 1000))
+    func cooldownRemainingMs(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(Int((self?.appOpenAd?.cooldownRemaining ?? 0) * 1000))
+        }
     }
 
     @objc
     func destroy() {
-        appOpenAd?.destroy()
-        appOpenAd = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.appOpenAd?.destroy()
+            self?.appOpenAd = nil
+        }
     }
 
     @objc(isAvailable:reject:)
-    func isAvailable(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(appOpenAd?.isAvailable ?? false)
+    func isAvailable(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.appOpenAd?.isAvailable ?? false)
+        }
     }
 
     @objc(isInCooldown:reject:)
-    func isInCooldown(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(appOpenAd?.isInCooldown ?? false)
+    func isInCooldown(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.appOpenAd?.isInCooldown ?? false)
+        }
     }
 
     @objc(isShowing:reject:)
-    func isShowing(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        resolve(appOpenAd?.isShowing ?? false)
+    func isShowing(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+            resolve(self?.appOpenAd?.isShowing ?? false)
+        }
     }
 
     @objc
     func loadAd() {
-        appOpenAd?.loadAd()
+        DispatchQueue.main.async { [weak self] in
+            self?.appOpenAd?.loadAd()
+        }
     }
 
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
-        destroy()
+        DispatchQueue.main.async { [weak self] in
 
-        appOpenAd = WAAppOpenAd(adUnitId: adUnitId)
-        appOpenAd?.delegate = self
+            guard let self = self else {
+                return
+            }
+
+            self.appOpenAd?.destroy()
+
+            self.appOpenAd = WAAppOpenAd(adUnitId: adUnitId)
+            self.appOpenAd?.delegate = self
+        }
     }
 
     @objc(setAutoReload:)
     func setAutoReload(_ autoReload: Bool) {
-        appOpenAd?.autoReload = autoReload
+        DispatchQueue.main.async { [weak self] in
+            self?.appOpenAd?.autoReload = autoReload
+        }
     }
 
     @objc(showAd:reject:)
     func showAd(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let appOpenAd = appOpenAd else {
-            resolve(false)
-            return
-        }
+        DispatchQueue.main.async { [weak self] in
 
-        DispatchQueue.main.async {
-
-            guard let controller = RCTPresentedViewController() else {
+            guard let appOpenAd = self?.appOpenAd,
+                  let controller = RCTPresentedViewController() else {
                 resolve(false)
                 return
             }
@@ -98,14 +120,10 @@ class RNWortiseAppOpen: RCTEventEmitter {
 
     @objc(tryToShowAd:reject:)
     func tryToShowAd(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        guard let appOpenAd = appOpenAd else {
-            resolve(false)
-            return
-        }
+        DispatchQueue.main.async { [weak self] in
 
-        DispatchQueue.main.async {
-
-            guard let controller = RCTPresentedViewController() else {
+            guard let appOpenAd = self?.appOpenAd,
+                  let controller = RCTPresentedViewController() else {
                 resolve(false)
                 return
             }

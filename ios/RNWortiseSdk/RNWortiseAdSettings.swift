@@ -5,6 +5,12 @@ import WortiseSDK
 @objc(RNWortiseAdSettings)
 class RNWortiseAdSettings: NSObject {
 
+    @objc
+    static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     @objc(getAssetKey:reject:)
     func getAssetKey(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         resolve(WAAdSettings.assetKey)

@@ -5,8 +5,14 @@ import WortiseSDK
 @objc(RNWortiseDataManager)
 class RNWortiseDataManager: NSObject {
 
+    @objc
+    static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
+
     @objc(addEmail:)
-    func addEmail(_email: String) {
+    func addEmail(_ email: String) {
         // Not supported
     }
 

@@ -44,11 +44,15 @@
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
+    "@expo/config-plugins": ">=6.0.0",
     "expo": ">=47.0.0",
     "react": ">=16.8.0",
     "react-native": ">=0.63.0"
   },
   "peerDependenciesMeta": {
+    "@expo/config-plugins": {
+      "optional": true
+    },
     "expo": {
       "optional": true
     }
