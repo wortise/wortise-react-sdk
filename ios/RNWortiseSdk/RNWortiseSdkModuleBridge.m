@@ -36,7 +36,7 @@ RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(destroy)
 
-RCT_EXTERN_METHOD(loadAd)
+RCT_EXTERN_METHOD(loadAd:(NSDictionary *)requestParameters)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
@@ -68,6 +68,8 @@ RCT_EXPORT_VIEW_PROPERTY(adSize, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(adUnitId, NSString)
 
 RCT_EXPORT_VIEW_PROPERTY(autoRefreshTime, NSNumber)
+
+RCT_EXPORT_VIEW_PROPERTY(requestParameters, NSDictionary)
 
 RCT_EXPORT_VIEW_PROPERTY(onClicked, RCTBubblingEventBlock)
 
@@ -130,7 +132,7 @@ RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(destroy)
 
-RCT_EXTERN_METHOD(loadAd)
+RCT_EXTERN_METHOD(loadAd:(NSDictionary *)requestParameters)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
@@ -155,7 +157,7 @@ RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(destroy)
 
-RCT_EXTERN_METHOD(loadAd)
+RCT_EXTERN_METHOD(loadAd:(NSDictionary *)requestParameters)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
@@ -178,6 +180,7 @@ RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(destroyAd:(NSString *)responseId)
 
 RCT_EXTERN_METHOD(loadAd:(NSString *)adUnitId
+                  requestParameters:(NSDictionary *)requestParameters
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 

@@ -75,10 +75,13 @@ class RNWortiseRewarded: RCTEventEmitter {
         }
     }
 
-    @objc
-    func loadAd() {
+    @objc(loadAd:)
+    func loadAd(_ requestParameters: NSDictionary?) {
         DispatchQueue.main.async { [weak self] in
-            self?.rewardedAd?.loadAd()
+
+            let parameters = WARequestParameters.from(requestParameters)
+
+            self?.rewardedAd?.loadAd(parameters: parameters)
         }
     }
 

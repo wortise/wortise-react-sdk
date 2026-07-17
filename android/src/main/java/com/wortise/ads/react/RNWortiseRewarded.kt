@@ -7,12 +7,14 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.wortise.ads.AdError
 import com.wortise.ads.RevenueData
 import com.wortise.ads.rewarded.RewardedAd
 import com.wortise.ads.rewarded.models.Reward
+import com.wortise.ads.react.extensions.toRequestParameters
 import com.wortise.ads.react.extensions.toWritableMap
 
 class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), RewardedAd.Listener, LifecycleEventListener {
@@ -61,8 +63,10 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
   }
 
   @ReactMethod
-  fun loadAd() {
-    rewardedAd?.loadAd()
+  fun loadAd(requestParameters: ReadableMap?) {
+    val parameters = requestParameters.toRequestParameters()
+
+    rewardedAd?.loadAd(parameters)
   }
 
   @ReactMethod

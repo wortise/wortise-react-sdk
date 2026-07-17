@@ -8,6 +8,7 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.wortise.ads.AdSize
 import com.wortise.ads.banner.BannerAd
+import com.wortise.ads.react.extensions.toRequestParameters
 
 class RNWortiseBanner : SimpleViewManager<RNWortiseBannerView>() {
 
@@ -36,7 +37,7 @@ class RNWortiseBanner : SimpleViewManager<RNWortiseBannerView>() {
 
   override fun receiveCommand(view: RNWortiseBannerView, commandId: String, args: ReadableArray?) {
     when (commandId) {
-      "loadAd" -> view.loadAd()
+      "loadAd" -> view.load()
     }
   }
 
@@ -56,7 +57,7 @@ class RNWortiseBanner : SimpleViewManager<RNWortiseBannerView>() {
     }
   }
 
-  
+
   @ReactProp(name = "adSize")
   fun setAdSize(view: RNWortiseBannerView, adSize: ReadableMap?) {
     if (adSize == null) {
@@ -74,5 +75,10 @@ class RNWortiseBanner : SimpleViewManager<RNWortiseBannerView>() {
   @ReactProp(name = "autoRefreshTime", defaultInt = 0)
   fun setAutoRefresh(view: RNWortiseBannerView, autoRefreshTime: Int) {
     view.autoRefreshTime = autoRefreshTime.toLong()
+  }
+
+  @ReactProp(name = "requestParameters")
+  fun setRequestParameters(view: RNWortiseBannerView, params: ReadableMap?) {
+    view.requestParameters = params.toRequestParameters()
   }
 }

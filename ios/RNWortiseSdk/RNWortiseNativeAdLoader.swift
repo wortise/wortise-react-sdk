@@ -37,10 +37,11 @@ class RNWortiseNativeAdLoader: RCTEventEmitter {
         delegates.removeValue(forKey: responseId)
     }
 
-    @objc(loadAd:resolve:reject:)
-    func loadAd(_ adUnitId: String,
-                resolve:    @escaping RCTPromiseResolveBlock,
-                reject:     @escaping RCTPromiseRejectBlock) {
+    @objc(loadAd:requestParameters:resolve:reject:)
+    func loadAd(_ adUnitId:        String,
+                requestParameters: NSDictionary?,
+                resolve:           @escaping RCTPromiseResolveBlock,
+                reject:            @escaping RCTPromiseRejectBlock) {
 
         let responseId = UUID().uuidString
 
@@ -61,7 +62,9 @@ class RNWortiseNativeAdLoader: RCTEventEmitter {
 
             RNWortiseNativeAdLoader.sharedLoaders[responseId] = loader
 
-            loader.loadAd()
+            let parameters = WARequestParameters.from(requestParameters)
+
+            loader.loadAd(parameters: parameters)
         }
     }
 

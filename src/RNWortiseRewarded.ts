@@ -1,4 +1,5 @@
 import { EmitterSubscription, NativeEventEmitter, NativeModules } from 'react-native';
+import { WortiseRequestParameters } from './WortiseRequestParameters';
 import { WortiseRevenueData } from './WortiseRevenueData';
 
 const { RNWortiseRewarded } = NativeModules;
@@ -47,8 +48,8 @@ export default {
     RNWortiseRewarded.destroy();
   },
 
-  loadAd() {
-    RNWortiseRewarded.loadAd();
+  loadAd(requestParameters?: WortiseRequestParameters) {
+    RNWortiseRewarded.loadAd(requestParameters ?? null);
   },
 
   removeAllListeners(eventType: RewardedEvent) {

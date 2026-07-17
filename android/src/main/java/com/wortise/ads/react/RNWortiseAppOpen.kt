@@ -7,11 +7,13 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.wortise.ads.AdError
 import com.wortise.ads.RevenueData
 import com.wortise.ads.appopen.AppOpenAd
+import com.wortise.ads.react.extensions.toRequestParameters
 import com.wortise.ads.react.extensions.toWritableMap
 
 class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), AppOpenAd.Listener, LifecycleEventListener {
@@ -60,8 +62,10 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   }
 
   @ReactMethod
-  fun loadAd() {
-    appOpenAd?.loadAd()
+  fun loadAd(requestParameters: ReadableMap?) {
+    val parameters = requestParameters.toRequestParameters()
+
+    appOpenAd?.loadAd(parameters)
   }
 
   @ReactMethod

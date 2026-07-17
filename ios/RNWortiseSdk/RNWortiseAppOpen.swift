@@ -73,10 +73,13 @@ class RNWortiseAppOpen: RCTEventEmitter {
         }
     }
 
-    @objc
-    func loadAd() {
+    @objc(loadAd:)
+    func loadAd(_ requestParameters: NSDictionary?) {
         DispatchQueue.main.async { [weak self] in
-            self?.appOpenAd?.loadAd()
+
+            let parameters = WARequestParameters.from(requestParameters)
+
+            self?.appOpenAd?.loadAd(parameters: parameters)
         }
     }
 

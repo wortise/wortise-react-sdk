@@ -1,4 +1,5 @@
 import { EmitterSubscription, NativeEventEmitter, NativeModules } from 'react-native';
+import { WortiseRequestParameters } from './WortiseRequestParameters';
 import { WortiseRevenueData } from './WortiseRevenueData';
 
 const { RNWortiseInterstitial } = NativeModules;
@@ -46,8 +47,8 @@ export default {
     RNWortiseInterstitial.destroy();
   },
 
-  loadAd() {
-    RNWortiseInterstitial.loadAd();
+  loadAd(requestParameters?: WortiseRequestParameters) {
+    RNWortiseInterstitial.loadAd(requestParameters ?? null);
   },
 
   removeAllListeners(eventType: InterstitialEvent) {

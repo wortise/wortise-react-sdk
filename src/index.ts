@@ -42,6 +42,8 @@ export type {
 
 export type { WortiseNativeAdViewProps } from './WortiseNativeAdView';
 
+export type { WortiseRequestParameters } from './WortiseRequestParameters';
+
 export type { WortiseRevenueData } from './WortiseRevenueData';
 
 export type { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';

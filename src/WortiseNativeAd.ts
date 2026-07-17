@@ -4,6 +4,7 @@ import {
   WortiseNativeAdImage,
   WortiseNativeMediaContent,
 } from './WortiseNativeAdData';
+import { WortiseRequestParameters } from './WortiseRequestParameters';
 import { WortiseRevenueData } from './WortiseRevenueData';
 
 const { RNWortiseNativeAdLoader } = NativeModules;
@@ -26,8 +27,11 @@ export default class WortiseNativeAd {
     this._data = data;
   }
 
-  static createForAdRequest(adUnitId: string): Promise<WortiseNativeAd> {
-    return RNWortiseNativeAdLoader.loadAd(adUnitId).then(
+  static createForAdRequest(
+    adUnitId: string,
+    requestParameters?: WortiseRequestParameters,
+  ): Promise<WortiseNativeAd> {
+    return RNWortiseNativeAdLoader.loadAd(adUnitId, requestParameters).then(
       (data: WortiseNativeAdData) => new WortiseNativeAd(data),
     );
   }

@@ -10,6 +10,7 @@ import com.facebook.react.uimanager.events.RCTEventEmitter
 import com.facebook.react.views.view.ReactViewGroup
 import com.wortise.ads.AdError
 import com.wortise.ads.AdSize
+import com.wortise.ads.RequestParameters
 import com.wortise.ads.RevenueData
 import com.wortise.ads.banner.BannerAd
 import com.wortise.ads.react.extensions.toWritableMap
@@ -20,10 +21,19 @@ class RNWortiseBannerView(private val reactContext: ReactContext) : BannerAd(rea
     reactContext.getJSModule(RCTEventEmitter::class.java)
   }
 
+
+  var requestParameters: RequestParameters? = null
+
+
   init {
     listener = this
 
     reactContext.addLifecycleEventListener(this)
+  }
+
+
+  fun load() {
+    loadAd(requestParameters)
   }
 
 

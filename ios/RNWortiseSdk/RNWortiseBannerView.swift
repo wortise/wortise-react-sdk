@@ -11,6 +11,8 @@ class RNWortiseBannerView: UIView {
 
     private var _autoRefreshTime: Double = 0
 
+    private var _requestParameters: WARequestParameters?
+
     private var bannerAd: WABannerAd?
 
 
@@ -54,6 +56,13 @@ class RNWortiseBannerView: UIView {
         didSet { _autoRefreshTime = (autoRefreshTime?.doubleValue ?? 0) / 1000 }
     }
 
+    @objc
+    var requestParameters: NSDictionary? {
+        didSet {
+            _requestParameters = WARequestParameters.from(requestParameters)
+        }
+    }
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -86,7 +95,6 @@ class RNWortiseBannerView: UIView {
         }
     }
 
-
     @objc
     func loadAd() {
         guard let adUnitId = _adUnitId, let adSize = _adSize else {
@@ -109,7 +117,7 @@ class RNWortiseBannerView: UIView {
 
         bannerAd = banner
 
-        banner.loadAd()
+        banner.loadAd(parameters: _requestParameters)
     }
 }
 

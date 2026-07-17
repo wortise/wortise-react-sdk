@@ -1,4 +1,5 @@
 import { ViewProps } from 'react-native';
+import { WortiseRequestParameters } from './WortiseRequestParameters';
 import { WortiseRevenueData } from './WortiseRevenueData';
 import AdSize from './RNWortiseAdSize';
 
@@ -25,4 +26,6 @@ export interface WortiseBannerProps extends ViewProps {
   onRevenuePaid?: (data: WortiseRevenueData) => void;
 
   onSizeChange?: (event: { nativeEvent: SizeChangeEvent }) => void;
+
+  requestParameters?: WortiseRequestParameters;
 }

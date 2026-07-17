@@ -6,12 +6,14 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.wortise.ads.AdError
 import com.wortise.ads.RevenueData
 import com.wortise.ads.natives.NativeAd
 import com.wortise.ads.natives.NativeAdLoader
+import com.wortise.ads.react.extensions.toRequestParameters
 import com.wortise.ads.react.extensions.toWritableMap
 import java.util.UUID
 
@@ -36,7 +38,7 @@ class RNWortiseNativeAdLoader(reactContext: ReactApplicationContext) : ReactCont
     fun removeListeners(count: Int) {}
 
     @ReactMethod
-    fun loadAd(adUnitId: String, promise: Promise) {
+    fun loadAd(adUnitId: String, requestParameters: ReadableMap?, promise: Promise) {
         val context = reactApplicationContext.currentActivity ?: reactApplicationContext
 
         val responseId = UUID.randomUUID().toString()
@@ -85,7 +87,9 @@ class RNWortiseNativeAdLoader(reactContext: ReactApplicationContext) : ReactCont
 
         adLoaders[responseId] = loader
 
-        loader.loadAd()
+        val parameters = requestParameters.toRequestParameters()
+
+        loader.loadAd(parameters)
     }
 
     @ReactMethod
