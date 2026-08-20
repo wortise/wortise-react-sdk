@@ -1,7 +1,7 @@
 buildscript {
     ext.kotlin_version = rootProject.ext.has('kotlinVersion')
         ? rootProject.ext.get('kotlinVersion')
-        : '2.1.21'
+        : '2.2.21'
 
     repositories {
         google()
