@@ -1,7 +1,7 @@
 buildscript {
     ext.kotlin_version = rootProject.ext.has('kotlinVersion')
         ? rootProject.ext.get('kotlinVersion')
-        : '1.9.24'
+        : '2.1.21'
 
     repositories {
         google()
@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    api 'com.wortise:android-sdk:1.8.0-alpha04'
+    api 'com.wortise:android-sdk:1.8.0-beta08'
 
     implementation 'com.facebook.react:react-native:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

@@ -206,7 +206,7 @@ private class NativeAdDelegateWrapper: NSObject, WANativeDelegate {
     }
 
     func didPayRevenue(nativeAd: WANativeAd, data: WARevenueData) {
-        let body = [
+        let body: [String : Any] = [
             "responseId": responseId,
             "data": data.toMap()
         ]
