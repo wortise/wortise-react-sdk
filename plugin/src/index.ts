@@ -14,9 +14,8 @@ type PluginParameters = {
 
 const MAVEN_URLS = [
   'https://maven.wortise.com/artifactory/public',
-  'https://android-sdk.is.com/',
   'https://artifact.bytedance.com/repository/pangle',
-  'https://cboost.jfrog.io/artifactory/chartboost-ads/',
+  'https://artifactory.bidmachine.io/bidmachine',
 ];
 
 function addMavenRepository(gradle: string, url: string): string {
