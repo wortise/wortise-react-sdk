@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.authors      = package['author']
   spec.homepage     = "https://wortise.com"
   spec.license      = package['license']
-  spec.platforms    = { :ios => "13.0" }
+  spec.platforms    = { :ios => "15.0" }
   spec.swift_versions = ['5.0']
 
   spec.source       = { :git => 'https://github.com/wortise/wortise-react-sdk.git' }
@@ -23,5 +23,5 @@ Pod::Spec.new do |spec|
     spec.dependency "React-Core"
   end
 
-  spec.dependency   "WortiseSDK", '1.8.0'
+  spec.dependency   "WortiseSDK", '1.8.1'
 end
