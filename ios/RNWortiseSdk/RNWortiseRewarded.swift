@@ -12,6 +12,7 @@ class RNWortiseRewarded: RCTEventEmitter {
     fileprivate static let EVENT_FAILED_TO_SHOW = "onRewardedFailedToShow"
     fileprivate static let EVENT_IMPRESSION     = "onRewardedImpression"
     fileprivate static let EVENT_LOADED         = "onRewardedLoaded"
+    fileprivate static let EVENT_REFRESHED      = "onRewardedRefreshed"
     fileprivate static let EVENT_REVENUE_PAID   = "onRewardedRevenuePaid"
     fileprivate static let EVENT_SHOWN          = "onRewardedShown"
 
@@ -33,6 +34,7 @@ class RNWortiseRewarded: RCTEventEmitter {
             RNWortiseRewarded.EVENT_FAILED_TO_SHOW,
             RNWortiseRewarded.EVENT_IMPRESSION,
             RNWortiseRewarded.EVENT_LOADED,
+            RNWortiseRewarded.EVENT_REFRESHED,
             RNWortiseRewarded.EVENT_REVENUE_PAID,
             RNWortiseRewarded.EVENT_SHOWN
         ]
@@ -85,6 +87,16 @@ class RNWortiseRewarded: RCTEventEmitter {
         }
     }
 
+    @objc(reloadAd:)
+    func reloadAd(_ requestParameters: NSDictionary?) {
+        DispatchQueue.main.async { [weak self] in
+
+            let parameters = WARequestParameters.from(requestParameters)
+
+            self?.rewardedAd?.reloadAd(parameters: parameters)
+        }
+    }
+
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
         DispatchQueue.main.async { [weak self] in
@@ -97,6 +109,13 @@ class RNWortiseRewarded: RCTEventEmitter {
 
             self.rewardedAd = WARewardedAd(adUnitId: adUnitId)
             self.rewardedAd?.delegate = self
+        }
+    }
+
+    @objc(setAutoRefresh:)
+    func setAutoRefresh(_ autoRefresh: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.rewardedAd?.autoRefresh = autoRefresh
         }
     }
 
@@ -155,6 +174,10 @@ extension RNWortiseRewarded: WARewardedDelegate {
 
     func didPayRevenue(rewardedAd: WARewardedAd, data: WARevenueData) {
         sendEvent(withName: RNWortiseRewarded.EVENT_REVENUE_PAID, body: data.toMap())
+    }
+
+    func didRefresh(rewardedAd: WARewardedAd) {
+        sendEvent(withName: RNWortiseRewarded.EVENT_REFRESHED, body: nil)
     }
 
     func didShow(rewardedAd: WARewardedAd) {

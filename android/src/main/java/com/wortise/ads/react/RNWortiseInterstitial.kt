@@ -69,6 +69,13 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
   }
 
   @ReactMethod
+  fun reloadAd(requestParameters: ReadableMap?) {
+    val parameters = requestParameters.toRequestParameters()
+
+    interstitialAd?.reloadAd(parameters)
+  }
+
+  @ReactMethod
   fun removeListeners(count: Int) {}
 
   @ReactMethod
@@ -78,6 +85,11 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
     interstitialAd = InterstitialAd(reactApplicationContext.currentActivity ?: reactApplicationContext, adUnitId).also {
       it.listener = this
     }
+  }
+
+  @ReactMethod
+  fun setAutoRefresh(autoRefresh: Boolean) {
+    interstitialAd?.autoRefresh = autoRefresh
   }
 
   @ReactMethod
@@ -134,6 +146,10 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
     sendEvent(EVENT_LOADED)
   }
 
+  override fun onInterstitialRefreshed(ad: InterstitialAd) {
+    sendEvent(EVENT_REFRESHED)
+  }
+
   override fun onInterstitialRevenuePaid(ad: InterstitialAd, data: RevenueData) {
     sendEvent(EVENT_REVENUE_PAID, data.toWritableMap())
   }
@@ -150,6 +166,7 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
     const val EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow"
     const val EVENT_IMPRESSION     = "onInterstitialImpression"
     const val EVENT_LOADED         = "onInterstitialLoaded"
+    const val EVENT_REFRESHED      = "onInterstitialRefreshed"
     const val EVENT_REVENUE_PAID   = "onInterstitialRevenuePaid"
     const val EVENT_SHOWN          = "onInterstitialShown"
   }

@@ -69,6 +69,13 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   }
 
   @ReactMethod
+  fun reloadAd(requestParameters: ReadableMap?) {
+    val parameters = requestParameters.toRequestParameters()
+
+    appOpenAd?.reloadAd(parameters)
+  }
+
+  @ReactMethod
   fun removeListeners(count: Int) {}
 
   @ReactMethod
@@ -78,6 +85,11 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
     appOpenAd = AppOpenAd(reactApplicationContext.currentActivity ?: reactApplicationContext, adUnitId).also {
       it.listener = this
     }
+  }
+
+  @ReactMethod
+  fun setAutoRefresh(autoRefresh: Boolean) {
+    appOpenAd?.autoRefresh = autoRefresh
   }
 
   @ReactMethod
@@ -155,6 +167,10 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
     sendEvent(EVENT_LOADED)
   }
 
+  override fun onAppOpenRefreshed(ad: AppOpenAd) {
+    sendEvent(EVENT_REFRESHED)
+  }
+
   override fun onAppOpenRevenuePaid(ad: AppOpenAd, data: RevenueData) {
     sendEvent(EVENT_REVENUE_PAID, data.toWritableMap())
   }
@@ -171,6 +187,7 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
     const val EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow"
     const val EVENT_IMPRESSION     = "onAppOpenImpression"
     const val EVENT_LOADED         = "onAppOpenLoaded"
+    const val EVENT_REFRESHED      = "onAppOpenRefreshed"
     const val EVENT_REVENUE_PAID   = "onAppOpenRevenuePaid"
     const val EVENT_SHOWN          = "onAppOpenShown"
   }

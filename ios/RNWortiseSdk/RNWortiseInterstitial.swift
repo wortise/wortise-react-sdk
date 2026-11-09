@@ -11,6 +11,7 @@ class RNWortiseInterstitial: RCTEventEmitter {
     fileprivate static let EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow"
     fileprivate static let EVENT_IMPRESSION     = "onInterstitialImpression"
     fileprivate static let EVENT_LOADED         = "onInterstitialLoaded"
+    fileprivate static let EVENT_REFRESHED      = "onInterstitialRefreshed"
     fileprivate static let EVENT_REVENUE_PAID   = "onInterstitialRevenuePaid"
     fileprivate static let EVENT_SHOWN          = "onInterstitialShown"
 
@@ -31,6 +32,7 @@ class RNWortiseInterstitial: RCTEventEmitter {
             RNWortiseInterstitial.EVENT_FAILED_TO_SHOW,
             RNWortiseInterstitial.EVENT_IMPRESSION,
             RNWortiseInterstitial.EVENT_LOADED,
+            RNWortiseInterstitial.EVENT_REFRESHED,
             RNWortiseInterstitial.EVENT_REVENUE_PAID,
             RNWortiseInterstitial.EVENT_SHOWN
         ]
@@ -84,6 +86,16 @@ class RNWortiseInterstitial: RCTEventEmitter {
         }
     }
 
+    @objc(reloadAd:)
+    func reloadAd(_ requestParameters: NSDictionary?) {
+        DispatchQueue.main.async { [weak self] in
+
+            let parameters = WARequestParameters.from(requestParameters)
+
+            self?.interstitialAd?.reloadAd(parameters: parameters)
+        }
+    }
+
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
         DispatchQueue.main.async { [weak self] in
@@ -96,6 +108,13 @@ class RNWortiseInterstitial: RCTEventEmitter {
 
             self.interstitialAd = WAInterstitialAd(adUnitId: adUnitId)
             self.interstitialAd?.delegate = self
+        }
+    }
+
+    @objc(setAutoRefresh:)
+    func setAutoRefresh(_ autoRefresh: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.interstitialAd?.autoRefresh = autoRefresh
         }
     }
 
@@ -144,6 +163,10 @@ extension RNWortiseInterstitial: WAInterstitialDelegate {
 
     func didPayRevenue(interstitialAd: WAInterstitialAd, data: WARevenueData) {
         sendEvent(withName: RNWortiseInterstitial.EVENT_REVENUE_PAID, body: data.toMap())
+    }
+
+    func didRefresh(interstitialAd: WAInterstitialAd) {
+        sendEvent(withName: RNWortiseInterstitial.EVENT_REFRESHED, body: nil)
     }
 
     func didShow(interstitialAd: WAInterstitialAd) {

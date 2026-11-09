@@ -13,6 +13,7 @@ type InterstitialEventMap = {
   onInterstitialFailedToShow: { message: string; name: string };
   onInterstitialImpression: null;
   onInterstitialLoaded: null;
+  onInterstitialRefreshed: null;
   onInterstitialRevenuePaid: WortiseRevenueData;
   onInterstitialShown: null;
 };
@@ -51,12 +52,20 @@ export default {
     RNWortiseInterstitial.loadAd(requestParameters ?? null);
   },
 
+  reloadAd(requestParameters?: WortiseRequestParameters) {
+    RNWortiseInterstitial.reloadAd(requestParameters ?? null);
+  },
+
   removeAllListeners(eventType: InterstitialEvent) {
     emitter.removeAllListeners(eventType);
   },
 
   setAdUnitId(adUnitId: string) {
     RNWortiseInterstitial.setAdUnitId(adUnitId);
+  },
+
+  setAutoRefresh(autoRefresh: boolean) {
+    RNWortiseInterstitial.setAutoRefresh(autoRefresh);
   },
 
   showAd() {
