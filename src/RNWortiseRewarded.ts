@@ -14,6 +14,7 @@ type RewardedEventMap = {
   onRewardedFailedToShow: { message: string; name: string };
   onRewardedImpression: null;
   onRewardedLoaded: null;
+  onRewardedRefreshed: null;
   onRewardedRevenuePaid: WortiseRevenueData;
   onRewardedShown: null;
 };
@@ -52,12 +53,20 @@ export default {
     RNWortiseRewarded.loadAd(requestParameters ?? null);
   },
 
+  reloadAd(requestParameters?: WortiseRequestParameters) {
+    RNWortiseRewarded.reloadAd(requestParameters ?? null);
+  },
+
   removeAllListeners(eventType: RewardedEvent) {
     emitter.removeAllListeners(eventType);
   },
 
   setAdUnitId(adUnitId: string) {
     RNWortiseRewarded.setAdUnitId(adUnitId);
+  },
+
+  setAutoRefresh(autoRefresh: boolean) {
+    RNWortiseRewarded.setAutoRefresh(autoRefresh);
   },
 
   showAd() {

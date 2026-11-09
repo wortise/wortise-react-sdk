@@ -70,6 +70,13 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
   }
 
   @ReactMethod
+  fun reloadAd(requestParameters: ReadableMap?) {
+    val parameters = requestParameters.toRequestParameters()
+
+    rewardedAd?.reloadAd(parameters)
+  }
+
+  @ReactMethod
   fun removeListeners(count: Int) {}
 
   @ReactMethod
@@ -79,6 +86,11 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
     rewardedAd = RewardedAd(reactApplicationContext.currentActivity ?: reactApplicationContext, adUnitId).also {
       it.listener = this
     }
+  }
+
+  @ReactMethod
+  fun setAutoRefresh(autoRefresh: Boolean) {
+    rewardedAd?.autoRefresh = autoRefresh
   }
 
   @ReactMethod
@@ -145,6 +157,10 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
     sendEvent(EVENT_LOADED)
   }
 
+  override fun onRewardedRefreshed(ad: RewardedAd) {
+    sendEvent(EVENT_REFRESHED)
+  }
+
   override fun onRewardedRevenuePaid(ad: RewardedAd, data: RevenueData) {
     sendEvent(EVENT_REVENUE_PAID, data.toWritableMap())
   }
@@ -162,6 +178,7 @@ class RNWortiseRewarded(reactContext: ReactApplicationContext) : ReactContextBas
     const val EVENT_FAILED_TO_SHOW = "onRewardedFailedToShow"
     const val EVENT_IMPRESSION     = "onRewardedImpression"
     const val EVENT_LOADED         = "onRewardedLoaded"
+    const val EVENT_REFRESHED      = "onRewardedRefreshed"
     const val EVENT_REVENUE_PAID   = "onRewardedRevenuePaid"
     const val EVENT_SHOWN          = "onRewardedShown"
   }

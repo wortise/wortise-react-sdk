@@ -13,6 +13,7 @@ type AppOpenEventMap = {
   onAppOpenFailedToShow: { message: string; name: string };
   onAppOpenImpression: null;
   onAppOpenLoaded: null;
+  onAppOpenRefreshed: null;
   onAppOpenRevenuePaid: WortiseRevenueData;
   onAppOpenShown: null;
 };
@@ -51,12 +52,20 @@ export default {
     RNWortiseAppOpen.loadAd(requestParameters ?? null);
   },
 
+  reloadAd(requestParameters?: WortiseRequestParameters) {
+    RNWortiseAppOpen.reloadAd(requestParameters ?? null);
+  },
+
   removeAllListeners(eventType: AppOpenEvent) {
     emitter.removeAllListeners(eventType);
   },
 
   setAdUnitId(adUnitId: string) {
     RNWortiseAppOpen.setAdUnitId(adUnitId);
+  },
+
+  setAutoRefresh(autoRefresh: boolean) {
+    RNWortiseAppOpen.setAutoRefresh(autoRefresh);
   },
 
   setAutoReload(autoReload: boolean) {

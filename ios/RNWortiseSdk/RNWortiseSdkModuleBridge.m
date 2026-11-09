@@ -47,7 +47,11 @@ RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(reloadAd:(NSDictionary *)requestParameters)
+
 RCT_EXTERN_METHOD(setAdUnitId:(NSString *)adUnitId)
+
+RCT_EXTERN_METHOD(setAutoRefresh:(BOOL)autoRefresh)
 
 RCT_EXTERN_METHOD(setAutoReload:(BOOL)autoReload)
 
@@ -143,7 +147,11 @@ RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(reloadAd:(NSDictionary *)requestParameters)
+
 RCT_EXTERN_METHOD(setAdUnitId:(NSString *)adUnitId)
+
+RCT_EXTERN_METHOD(setAutoRefresh:(BOOL)autoRefresh)
 
 RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
@@ -168,7 +176,11 @@ RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(reloadAd:(NSDictionary *)requestParameters)
+
 RCT_EXTERN_METHOD(setAdUnitId:(NSString *)adUnitId)
+
+RCT_EXTERN_METHOD(setAutoRefresh:(BOOL)autoRefresh)
 
 RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)

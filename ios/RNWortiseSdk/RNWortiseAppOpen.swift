@@ -11,6 +11,7 @@ class RNWortiseAppOpen: RCTEventEmitter {
     fileprivate static let EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow"
     fileprivate static let EVENT_IMPRESSION     = "onAppOpenImpression"
     fileprivate static let EVENT_LOADED         = "onAppOpenLoaded"
+    fileprivate static let EVENT_REFRESHED      = "onAppOpenRefreshed"
     fileprivate static let EVENT_REVENUE_PAID   = "onAppOpenRevenuePaid"
     fileprivate static let EVENT_SHOWN          = "onAppOpenShown"
 
@@ -31,6 +32,7 @@ class RNWortiseAppOpen: RCTEventEmitter {
             RNWortiseAppOpen.EVENT_FAILED_TO_SHOW,
             RNWortiseAppOpen.EVENT_IMPRESSION,
             RNWortiseAppOpen.EVENT_LOADED,
+            RNWortiseAppOpen.EVENT_REFRESHED,
             RNWortiseAppOpen.EVENT_REVENUE_PAID,
             RNWortiseAppOpen.EVENT_SHOWN
         ]
@@ -83,6 +85,16 @@ class RNWortiseAppOpen: RCTEventEmitter {
         }
     }
 
+    @objc(reloadAd:)
+    func reloadAd(_ requestParameters: NSDictionary?) {
+        DispatchQueue.main.async { [weak self] in
+
+            let parameters = WARequestParameters.from(requestParameters)
+
+            self?.appOpenAd?.reloadAd(parameters: parameters)
+        }
+    }
+
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
         DispatchQueue.main.async { [weak self] in
@@ -95,6 +107,13 @@ class RNWortiseAppOpen: RCTEventEmitter {
 
             self.appOpenAd = WAAppOpenAd(adUnitId: adUnitId)
             self.appOpenAd?.delegate = self
+        }
+    }
+
+    @objc(setAutoRefresh:)
+    func setAutoRefresh(_ autoRefresh: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            self?.appOpenAd?.autoRefresh = autoRefresh
         }
     }
 
@@ -166,6 +185,10 @@ extension RNWortiseAppOpen: WAAppOpenDelegate {
 
     func didPayRevenue(appOpenAd: WAAppOpenAd, data: WARevenueData) {
         sendEvent(withName: RNWortiseAppOpen.EVENT_REVENUE_PAID, body: data.toMap())
+    }
+
+    func didRefresh(appOpenAd: WAAppOpenAd) {
+        sendEvent(withName: RNWortiseAppOpen.EVENT_REFRESHED, body: nil)
     }
 
     func didShow(appOpenAd: WAAppOpenAd) {
