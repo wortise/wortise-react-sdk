@@ -1,7 +1,11 @@
+import fs from 'fs';
+import path from 'path';
+
 import {
   AndroidConfig,
   ConfigPlugin,
   withAndroidManifest,
+  withDangerousMod,
   withInfoPlist,
   withPlugins,
   withProjectBuildGradle,
@@ -17,6 +21,21 @@ const MAVEN_URLS = [
   'https://artifact.bytedance.com/repository/pangle',
   'https://artifactory.bidmachine.io/bidmachine',
 ];
+
+// WortiseSDK pre-releases, and finals once CocoaPods trunk is read-only, are only in the Wortise
+// specs repo. Declaring any source disables the implicit trunk one, so declare both.
+const POD_SOURCES = [
+  'https://cdn.cocoapods.org/',
+  'https://github.com/wortise/cocoapods-specs.git',
+];
+
+function addPodSources(podfile: string): string {
+  const missing = POD_SOURCES.filter(url => !podfile.includes(url));
+
+  if (missing.length === 0) return podfile;
+
+  return missing.map(url => `source '${url}'`).join('\n') + '\n' + podfile;
+}
 
 function addMavenRepository(gradle: string, url: string): string {
   if (gradle.includes(url)) return gradle;
@@ -113,6 +132,20 @@ const withMavenRepositories: ConfigPlugin = config => {
   });
 };
 
+const withPodSources: ConfigPlugin = config => {
+  return withDangerousMod(config, [
+    'ios',
+    async config => {
+      const podfilePath = path.join(config.modRequest.platformProjectRoot, 'Podfile');
+      const podfile = await fs.promises.readFile(podfilePath, 'utf8');
+
+      await fs.promises.writeFile(podfilePath, addPodSources(podfile));
+
+      return config;
+    },
+  ]);
+};
+
 const withReactNativeWortise: ConfigPlugin<PluginParameters> = (
   config,
   { androidGoogleAppId, iosGoogleAppId } = {},
@@ -135,6 +168,7 @@ const withReactNativeWortise: ConfigPlugin<PluginParameters> = (
     withMavenRepositories,
     // iOS
     [withIosGoogleAppId, iosGoogleAppId],
+    withPodSources,
   ]);
 };
 
