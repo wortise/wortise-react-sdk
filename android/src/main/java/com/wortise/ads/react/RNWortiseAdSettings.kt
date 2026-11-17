@@ -6,6 +6,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.wortise.ads.AdContentRating
 import com.wortise.ads.AdSettings
+import com.wortise.ads.extensions.tryOrNull
 
 class RNWortiseAdSettings(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -51,7 +52,7 @@ class RNWortiseAdSettings(reactContext: ReactApplicationContext) : ReactContextB
   @ReactMethod
   fun setMaxAdContentRating(rating: String?) {
     val value = rating?.let {
-      runCatching { AdContentRating.valueOf(it) }.getOrNull()
+      tryOrNull { AdContentRating.valueOf(it) }
     }
 
     AdSettings.setMaxAdContentRating(reactApplicationContext, value)

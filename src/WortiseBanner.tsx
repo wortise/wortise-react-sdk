@@ -2,12 +2,6 @@ import React, { createRef } from 'react';
 import { UIManager, findNodeHandle, requireNativeComponent } from 'react-native';
 import AdSize from './RNWortiseAdSize';
 import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
-import { WortiseRevenueData } from './WortiseRevenueData';
-
-type NativeBannerProps = Omit<WortiseBannerProps, 'onFailedToLoad' | 'onRevenuePaid'> & {
-  onFailedToLoad?: (event: { nativeEvent: { message: string; name: string } }) => void;
-  onRevenuePaid?: (event: { nativeEvent: WortiseRevenueData }) => void;
-};
 
 type WortiseBannerStyle = {
   height?: number | string;
@@ -19,6 +13,10 @@ type WortiseBannerState = {
 };
 
 type WortiseBannerView = React.ComponentRef<typeof RNWortiseBanner>;
+
+const bannerUIManager = UIManager as typeof UIManager & {
+  dispatchViewManagerCommand(reactTag: number, command: 'loadAd', args: []): void;
+};
 
 class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerState> {
   static get AUTO_REFRESH_DEFAULT_TIME() {
@@ -82,8 +80,7 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     const reactTag = findNodeHandle(this.ref.current);
 
     if (reactTag != null) {
-      // React Native accepts string commands at runtime, but its generated type only allows numbers.
-      UIManager.dispatchViewManagerCommand(reactTag, 'loadAd' as unknown as number, []);
+      bannerUIManager.dispatchViewManagerCommand(reactTag, 'loadAd', []);
     }
   }
 
@@ -94,8 +91,6 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
       <RNWortiseBanner
         {...this.props}
         adSize={adSize}
-        onFailedToLoad={event => this.props.onFailedToLoad?.(event.nativeEvent)}
-        onRevenuePaid={event => this.props.onRevenuePaid?.(event.nativeEvent)}
         onSizeChange={this.handleSizeChange}
         ref={this.ref}
         style={[this.props.style, this.state.style]}
@@ -118,6 +113,6 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   }
 }
 
-const RNWortiseBanner = requireNativeComponent<NativeBannerProps>('RNWortiseBanner');
+const RNWortiseBanner = requireNativeComponent<WortiseBannerProps>('RNWortiseBanner');
 
 export default WortiseBanner;
