@@ -40,7 +40,7 @@ export default {
     eventType: K,
     handler: (event: AppOpenEventMap[K]) => void,
   ): EmitterSubscription {
-    return emitter.addListener(eventType, handler);
+    return emitter.addListener(eventType, event => handler(event as AppOpenEventMap[K]));
   },
 
   destroy() {
@@ -48,7 +48,7 @@ export default {
   },
 
   loadAd(requestParameters?: WortiseRequestParameters) {
-    RNWortiseAppOpen.loadAd(requestParameters ?? null);
+    RNWortiseAppOpen.loadAd(requestParameters ?? {});
   },
 
   removeAllListeners(eventType: AppOpenEvent) {

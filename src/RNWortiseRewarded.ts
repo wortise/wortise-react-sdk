@@ -8,7 +8,7 @@ const emitter = new NativeEventEmitter(RNWortiseRewarded);
 
 type RewardedEventMap = {
   onRewardedClicked: null;
-  onRewardedCompleted: { amount: number; label: string; success: boolean };
+  onRewardedCompleted: { amount: number; label: string | null; success: boolean };
   onRewardedDismissed: null;
   onRewardedFailedToLoad: { message: string; name: string };
   onRewardedFailedToShow: { message: string; name: string };
@@ -41,7 +41,7 @@ export default {
     eventType: K,
     handler: (event: RewardedEventMap[K]) => void,
   ): EmitterSubscription {
-    return emitter.addListener(eventType, handler);
+    return emitter.addListener(eventType, event => handler(event as RewardedEventMap[K]));
   },
 
   destroy() {
@@ -49,7 +49,7 @@ export default {
   },
 
   loadAd(requestParameters?: WortiseRequestParameters) {
-    RNWortiseRewarded.loadAd(requestParameters ?? null);
+    RNWortiseRewarded.loadAd(requestParameters ?? {});
   },
 
   removeAllListeners(eventType: RewardedEvent) {

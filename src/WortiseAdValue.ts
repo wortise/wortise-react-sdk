@@ -1,5 +1,5 @@
 export type WortiseAdValue = {
-  currency?: string;
-  precision?: string;
+  currency?: string | null;
+  precision?: string | null;
   value: number;
 };

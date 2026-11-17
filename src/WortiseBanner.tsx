@@ -1,18 +1,24 @@
 import React, { createRef } from 'react';
-import { findNodeHandle, requireNativeComponent, NativeMethods, UIManager } from 'react-native';
-import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
+import { UIManager, findNodeHandle, requireNativeComponent } from 'react-native';
 import AdSize from './RNWortiseAdSize';
+import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
+import { WortiseRevenueData } from './WortiseRevenueData';
+
+type NativeBannerProps = Omit<WortiseBannerProps, 'onFailedToLoad' | 'onRevenuePaid'> & {
+  onFailedToLoad?: (event: { nativeEvent: { message: string; name: string } }) => void;
+  onRevenuePaid?: (event: { nativeEvent: WortiseRevenueData }) => void;
+};
 
 type WortiseBannerStyle = {
-  width?: number | string;
   height?: number | string;
+  width?: number | string;
 };
 
 type WortiseBannerState = {
   style: WortiseBannerStyle;
 };
 
-type WortiseBannerView = React.Component<WortiseBannerProps> & NativeMethods;
+type WortiseBannerView = React.ComponentRef<typeof RNWortiseBanner>;
 
 class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerState> {
   static get AUTO_REFRESH_DEFAULT_TIME() {
@@ -35,7 +41,7 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     return 0;
   }
 
-  ref = createRef<WortiseBannerView>();
+  ref: React.RefObject<WortiseBannerView | null> = createRef<WortiseBannerView>();
 
   constructor(props: WortiseBannerProps) {
     super(props);
@@ -73,7 +79,12 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   }
 
   loadAd() {
-    UIManager.dispatchViewManagerCommand(findNodeHandle(this.ref.current), 'loadAd', []);
+    const reactTag = findNodeHandle(this.ref.current);
+
+    if (reactTag != null) {
+      // React Native accepts string commands at runtime, but its generated type only allows numbers.
+      UIManager.dispatchViewManagerCommand(reactTag, 'loadAd' as unknown as number, []);
+    }
   }
 
   render() {
@@ -83,6 +94,8 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
       <RNWortiseBanner
         {...this.props}
         adSize={adSize}
+        onFailedToLoad={event => this.props.onFailedToLoad?.(event.nativeEvent)}
+        onRevenuePaid={event => this.props.onRevenuePaid?.(event.nativeEvent)}
         onSizeChange={this.handleSizeChange}
         ref={this.ref}
         style={[this.props.style, this.state.style]}
@@ -105,6 +118,6 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   }
 }
 
-const RNWortiseBanner = requireNativeComponent<WortiseBannerProps>('RNWortiseBanner');
+const RNWortiseBanner = requireNativeComponent<NativeBannerProps>('RNWortiseBanner');
 
 export default WortiseBanner;
