@@ -59,7 +59,9 @@ Add the Wortise config plugin and your Google Mobile Ads application IDs to `app
 }
 ```
 
-The plugin configures the Android Maven repositories and Google application ID. On iOS, it adds `GADApplicationIdentifier` and the required SKAdNetwork identifiers while preserving existing entries.
+The plugin configures the Android Maven repositories and Google application ID. On iOS, it adds `GADApplicationIdentifier`.
+
+Add the identifiers from the [Wortise iOS integration guide](https://docs.wortise.com/react-native/sdk-integration/#setup-infoplist-ios) to `expo.ios.infoPlist.SKAdNetworkItems` in `app.json` before running prebuild. Use an array of objects with a `SKAdNetworkIdentifier` key and keep any entries your app already uses. See the [Expo `ios.infoPlist` reference](https://docs.expo.dev/versions/latest/config/app/#infoplist).
 
 Generate the native projects and build your app:
 
@@ -77,7 +79,7 @@ After changing native configuration, rebuild the app. If Metro needs a clean res
 Configure the native projects manually:
 
 1. **Android:** Add the Google Mobile Ads application ID to `android/app/src/main/AndroidManifest.xml`.
-2. **iOS:** Add `GADApplicationIdentifier` and the current SKAdNetwork identifiers to `ios/<App>/Info.plist`.
+2. **iOS:** Add `GADApplicationIdentifier` and `SKAdNetworkItems` to `ios/<App>/Info.plist` using the [Wortise iOS integration guide](https://docs.wortise.com/react-native/sdk-integration/#setup-infoplist-ios).
 3. **Android repositories:** If Gradle cannot resolve the ad SDK dependencies, add the required Maven repositories to the root project:
 
    ```text

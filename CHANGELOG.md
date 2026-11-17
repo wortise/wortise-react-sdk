@@ -6,7 +6,6 @@ All notable changes to this project are documented here.
 
 ### Added
 
-- Added 59 iOS SKAdNetwork identifiers to the Expo config plugin while preserving identifiers supplied by the app.
 - Added integration and compatibility guidance for React Native CLI and Expo, including Kotlin, CocoaPods and iOS 27 scene requirements.
 
 ### Changed
