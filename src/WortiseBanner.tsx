@@ -1,18 +1,22 @@
 import React, { createRef } from 'react';
-import { findNodeHandle, requireNativeComponent, NativeMethods, UIManager } from 'react-native';
-import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
+import { UIManager, findNodeHandle, requireNativeComponent } from 'react-native';
 import AdSize from './RNWortiseAdSize';
+import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
 
 type WortiseBannerStyle = {
-  width?: number | string;
   height?: number | string;
+  width?: number | string;
 };
 
 type WortiseBannerState = {
   style: WortiseBannerStyle;
 };
 
-type WortiseBannerView = React.Component<WortiseBannerProps> & NativeMethods;
+type WortiseBannerView = React.ComponentRef<typeof RNWortiseBanner>;
+
+const bannerUIManager = UIManager as typeof UIManager & {
+  dispatchViewManagerCommand(reactTag: number, command: 'loadAd', args: []): void;
+};
 
 class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerState> {
   static get AUTO_REFRESH_DEFAULT_TIME() {
@@ -35,7 +39,7 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
     return 0;
   }
 
-  ref = createRef<WortiseBannerView>();
+  ref: React.RefObject<WortiseBannerView | null> = createRef<WortiseBannerView>();
 
   constructor(props: WortiseBannerProps) {
     super(props);
@@ -73,7 +77,11 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   }
 
   loadAd() {
-    UIManager.dispatchViewManagerCommand(findNodeHandle(this.ref.current), 'loadAd', []);
+    const reactTag = findNodeHandle(this.ref.current);
+
+    if (reactTag != null) {
+      bannerUIManager.dispatchViewManagerCommand(reactTag, 'loadAd', []);
+    }
   }
 
   render() {

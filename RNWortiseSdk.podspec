@@ -23,5 +23,5 @@ Pod::Spec.new do |spec|
     spec.dependency "React-Core"
   end
 
-  spec.dependency   "WortiseSDK", '1.8.1'
+  spec.dependency   "WortiseSDK", '1.8.2-beta.1'
 end

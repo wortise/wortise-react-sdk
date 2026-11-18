@@ -27,7 +27,9 @@ class RNWortiseBanner : SimpleViewManager<RNWortiseBannerView>() {
     val map = mutableMapOf<String, Any>()
 
     events.forEach {
-      map.put(it, mapOf("registrationName" to it))
+      val eventName = "top${it.removePrefix("on")}"
+
+      map.put(eventName, mapOf("registrationName" to it))
     }
 
     return map
