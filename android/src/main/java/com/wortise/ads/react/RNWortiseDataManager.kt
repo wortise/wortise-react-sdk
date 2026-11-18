@@ -6,7 +6,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.wortise.ads.data.DataManager
-import com.wortise.ads.extensions.tryOrNull
 import com.wortise.ads.user.UserGender
 
 class RNWortiseDataManager(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -64,7 +63,7 @@ class RNWortiseDataManager(reactContext: ReactApplicationContext) : ReactContext
   @ReactMethod
   fun setGender(gender: String?) {
     val value = gender?.let {
-      tryOrNull { UserGender.valueOf(gender) }
+      runCatching { UserGender.valueOf(gender) }.getOrNull()
     }
 
     DataManager.setGender(reactApplicationContext, value)

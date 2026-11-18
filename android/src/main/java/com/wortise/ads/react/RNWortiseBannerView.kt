@@ -6,7 +6,8 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.LifecycleEventListener
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.WritableMap
-import com.facebook.react.uimanager.events.RCTEventEmitter
+import com.facebook.react.uimanager.UIManagerHelper
+import com.facebook.react.uimanager.events.Event
 import com.facebook.react.views.view.ReactViewGroup
 import com.wortise.ads.AdError
 import com.wortise.ads.AdSize
@@ -15,12 +16,19 @@ import com.wortise.ads.RevenueData
 import com.wortise.ads.banner.BannerAd
 import com.wortise.ads.react.extensions.toWritableMap
 
+private class RNWortiseBannerEvent(
+  surfaceId: Int,
+  viewTag: Int,
+  private val registrationName: String,
+  private val eventData: WritableMap?
+) : Event<RNWortiseBannerEvent>(surfaceId, viewTag) {
+
+  override fun getEventName() = "top${registrationName.removePrefix("on")}"
+
+  override fun getEventData() = eventData
+}
+
 class RNWortiseBannerView(private val reactContext: ReactContext) : BannerAd(reactContext), BannerAd.Listener, LifecycleEventListener {
-
-  private val eventEmitter by lazy {
-    reactContext.getJSModule(RCTEventEmitter::class.java)
-  }
-
 
   var requestParameters: RequestParameters? = null
 
@@ -38,7 +46,12 @@ class RNWortiseBannerView(private val reactContext: ReactContext) : BannerAd(rea
 
 
   private fun sendEvent(eventName: String, params: WritableMap? = null) {
-    eventEmitter.receiveEvent(id, eventName, params)
+    @Suppress("DEPRECATION")
+    val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+
+    eventDispatcher?.dispatchEvent(
+      RNWortiseBannerEvent(UIManagerHelper.getSurfaceId(this), id, eventName, params)
+    )
   }
 
   private fun sendOnSizeChangeEvent() {
