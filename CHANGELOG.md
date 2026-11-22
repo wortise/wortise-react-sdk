@@ -1,3 +1,7 @@
+## Unreleased
+
+* Banner `onFailedToLoad` and `onRevenuePaid` listeners now receive the data directly, as their types declare (it is still available in `nativeEvent` too)
+
 ## 1.8.1
 
 * Wortise iOS SDK updated to version 1.8.1

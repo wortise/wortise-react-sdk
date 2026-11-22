@@ -1,6 +1,7 @@
 import React, { createRef } from 'react';
 import { findNodeHandle, requireNativeComponent, NativeMethods, UIManager } from 'react-native';
 import { SizeChangeEvent, WortiseBannerProps } from './WortiseBannerProps';
+import { WortiseRevenueData } from './WortiseRevenueData';
 import AdSize from './RNWortiseAdSize';
 
 type WortiseBannerStyle = {
@@ -12,7 +13,13 @@ type WortiseBannerState = {
   style: WortiseBannerStyle;
 };
 
-type WortiseBannerView = React.Component<WortiseBannerProps> & NativeMethods;
+type WortiseBannerView = React.Component<RNWortiseBannerProps> & NativeMethods;
+
+type WortiseBannerError = { message: string; name: string };
+
+function unwrap<T extends object>(event: { nativeEvent: T }): T {
+  return { ...event.nativeEvent, nativeEvent: event.nativeEvent };
+}
 
 class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerState> {
   static get AUTO_REFRESH_DEFAULT_TIME() {
@@ -40,6 +47,8 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   constructor(props: WortiseBannerProps) {
     super(props);
 
+    this.handleFailedToLoad = this.handleFailedToLoad.bind(this);
+    this.handleRevenuePaid = this.handleRevenuePaid.bind(this);
     this.handleSizeChange = this.handleSizeChange.bind(this);
 
     const style = WortiseBanner.computeStyle(props.adSize);
@@ -59,6 +68,18 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
       const style = WortiseBanner.computeStyle(this.props.adSize);
 
       this.setState({ style });
+    }
+  }
+
+  handleFailedToLoad(event: { nativeEvent: WortiseBannerError }) {
+    if (this.props.onFailedToLoad) {
+      this.props.onFailedToLoad(unwrap(event));
+    }
+  }
+
+  handleRevenuePaid(event: { nativeEvent: WortiseRevenueData }) {
+    if (this.props.onRevenuePaid) {
+      this.props.onRevenuePaid(unwrap(event));
     }
   }
 
@@ -83,6 +104,8 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
       <RNWortiseBanner
         {...this.props}
         adSize={adSize}
+        onFailedToLoad={this.handleFailedToLoad}
+        onRevenuePaid={this.handleRevenuePaid}
         onSizeChange={this.handleSizeChange}
         ref={this.ref}
         style={[this.props.style, this.state.style]}
@@ -105,6 +128,11 @@ class WortiseBanner extends React.Component<WortiseBannerProps, WortiseBannerSta
   }
 }
 
-const RNWortiseBanner = requireNativeComponent<WortiseBannerProps>('RNWortiseBanner');
+type RNWortiseBannerProps = Omit<WortiseBannerProps, 'onFailedToLoad' | 'onRevenuePaid'> & {
+  onFailedToLoad?: (event: { nativeEvent: WortiseBannerError }) => void;
+  onRevenuePaid?: (event: { nativeEvent: WortiseRevenueData }) => void;
+};
+
+const RNWortiseBanner = requireNativeComponent<RNWortiseBannerProps>('RNWortiseBanner');
 
 export default WortiseBanner;
