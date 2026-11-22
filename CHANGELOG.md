@@ -1,6 +1,7 @@
 ## Unreleased
 
 * Banner `onFailedToLoad` and `onRevenuePaid` listeners now receive the data directly, as their types declare (it is still available in `nativeEvent` too)
+* Android: a banner is now destroyed when its component is unmounted, instead of when the activity is destroyed
 
 ## 1.8.1
 
