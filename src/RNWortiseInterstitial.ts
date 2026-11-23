@@ -40,7 +40,7 @@ export default {
     eventType: K,
     handler: (event: InterstitialEventMap[K]) => void,
   ): EmitterSubscription {
-    return emitter.addListener(eventType, handler);
+    return emitter.addListener(eventType, event => handler(event as InterstitialEventMap[K]));
   },
 
   destroy() {
@@ -48,7 +48,7 @@ export default {
   },
 
   loadAd(requestParameters?: WortiseRequestParameters) {
-    RNWortiseInterstitial.loadAd(requestParameters ?? null);
+    RNWortiseInterstitial.loadAd(requestParameters ?? {});
   },
 
   removeAllListeners(eventType: InterstitialEvent) {

@@ -86,14 +86,16 @@ export default class WortiseNativeAd {
   ): EmitterSubscription {
     const responseId = this._data.responseId;
 
-    const subscription = emitter.addListener(
-      eventType,
-      (event: { responseId: string; data?: NativeAdEventMap[K] }) => {
-        if (event.responseId === responseId) {
-          handler(event.data as NativeAdEventMap[K]);
-        }
-      },
-    );
+    const subscription = emitter.addListener(eventType, event => {
+      const { data, responseId: eventResponseId } = event as {
+        data?: NativeAdEventMap[K];
+        responseId: string;
+      };
+
+      if (eventResponseId === responseId) {
+        handler((data ?? null) as NativeAdEventMap[K]);
+      }
+    });
 
     this._subscriptions.push(subscription);
 
