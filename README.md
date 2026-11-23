@@ -1,5 +1,7 @@
 # Wortise SDK for React Native
 
+[![npm package](https://img.shields.io/npm/v/@wortise/react-native-sdk.svg)](https://www.npmjs.com/package/@wortise/react-native-sdk)
+
 Integrate Wortise advertising into React Native applications using the native Wortise SDKs for Android and iOS.
 
 Supports React Native CLI and Expo projects through the Expo config plugin.
@@ -21,9 +23,9 @@ See the [Wortise integration requirements](https://docs.wortise.com/react-native
 
 | Package        | Supported range       |
 | -------------- | --------------------- |
-| `react-native` | `>=0.81.5 <0.89`      |
-| `react`        | `>=19.1 <20`          |
-| `expo`         | `>=54 <59` (optional) |
+| `react-native` | `>=0.81.5`            |
+| `react`        | `>=19.1`              |
+| `expo`         | `>=54` (optional)     |
 
 `expo` and `@expo/config-plugins` are optional peer dependencies. **React Native CLI projects do not require Expo.**
 
@@ -187,3 +189,16 @@ ext.kspVersion = '2.3.7'
 ```
 
 Rebuild the Android project after updating the toolchain.
+
+## Documentation
+
+- [Integration guide](https://docs.wortise.com/react-native/sdk-integration/)
+- [User consent](https://docs.wortise.com/react-native/user-consent/)
+- [Best practices](https://docs.wortise.com/react-native/best-practices/), with a checklist to review before publishing your app
+- [Troubleshooting](https://docs.wortise.com/react-native/troubleshooting/)
+- [Test ad units](https://docs.wortise.com/test-ad-units/)
+- [Changelog](https://docs.wortise.com/changelog/)
+
+## AI coding agents
+
+The documentation is also available as plain Markdown: [`react-native-sdk.txt`](https://docs.wortise.com/_llms-txt/react-native-sdk.txt) contains every page about this module, and [`llms.txt`](https://docs.wortise.com/llms.txt) lists the rest. Read the best practices page before writing integration code.

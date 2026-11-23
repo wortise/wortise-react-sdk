@@ -40,6 +40,12 @@ class RNWortiseBannerView(private val reactContext: ReactContext) : BannerAd(rea
   }
 
 
+  fun dispose() {
+    reactContext.removeLifecycleEventListener(this)
+
+    destroy()
+  }
+
   fun load() {
     loadAd(requestParameters)
   }
@@ -65,7 +71,7 @@ class RNWortiseBannerView(private val reactContext: ReactContext) : BannerAd(rea
 
 
   override fun onHostDestroy() {
-    destroy()
+    dispose()
   }
 
   override fun onHostPause() {
