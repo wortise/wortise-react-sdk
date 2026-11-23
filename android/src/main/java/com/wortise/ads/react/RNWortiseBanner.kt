@@ -35,6 +35,12 @@ class RNWortiseBanner : SimpleViewManager<RNWortiseBannerView>() {
 
   override fun getName(): String = "RNWortiseBanner"
 
+  override fun onDropViewInstance(view: RNWortiseBannerView) {
+    super.onDropViewInstance(view)
+
+    view.dispose()
+  }
+
   override fun receiveCommand(view: RNWortiseBannerView, commandId: String, args: ReadableArray?) {
     when (commandId) {
       "loadAd" -> view.load()
