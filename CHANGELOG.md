@@ -1,4 +1,4 @@
-## 1.8.4-beta.1
+## 1.8.2-beta.1
 
 * Wortise Android SDK updated to version 1.8.2-beta01
 * Wortise iOS SDK updated to version 1.8.2-beta.1
