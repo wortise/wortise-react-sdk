@@ -5,14 +5,17 @@ import WortiseSDK
 @objc(RNWortiseAppOpen)
 class RNWortiseAppOpen: RCTEventEmitter {
 
-    fileprivate static let EVENT_CLICKED        = "onAppOpenClicked"
-    fileprivate static let EVENT_DISMISSED      = "onAppOpenDismissed"
-    fileprivate static let EVENT_FAILED_TO_LOAD = "onAppOpenFailedToLoad"
-    fileprivate static let EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow"
-    fileprivate static let EVENT_IMPRESSION     = "onAppOpenImpression"
-    fileprivate static let EVENT_LOADED         = "onAppOpenLoaded"
-    fileprivate static let EVENT_REVENUE_PAID   = "onAppOpenRevenuePaid"
-    fileprivate static let EVENT_SHOWN          = "onAppOpenShown"
+    fileprivate static let EVENT_ADS_EXHAUSTED     = "onAppOpenAdsExhausted"
+    fileprivate static let EVENT_AD_PRELOADED      = "onAppOpenAdPreloaded"
+    fileprivate static let EVENT_CLICKED           = "onAppOpenClicked"
+    fileprivate static let EVENT_DISMISSED         = "onAppOpenDismissed"
+    fileprivate static let EVENT_FAILED_TO_LOAD    = "onAppOpenFailedToLoad"
+    fileprivate static let EVENT_FAILED_TO_PRELOAD = "onAppOpenFailedToPreload"
+    fileprivate static let EVENT_FAILED_TO_SHOW    = "onAppOpenFailedToShow"
+    fileprivate static let EVENT_IMPRESSION        = "onAppOpenImpression"
+    fileprivate static let EVENT_LOADED            = "onAppOpenLoaded"
+    fileprivate static let EVENT_REVENUE_PAID      = "onAppOpenRevenuePaid"
+    fileprivate static let EVENT_SHOWN             = "onAppOpenShown"
 
 
     fileprivate var appOpenAd: WAAppOpenAd?
@@ -25,9 +28,12 @@ class RNWortiseAppOpen: RCTEventEmitter {
 
     override func supportedEvents() -> [String]! {
         return [
+            RNWortiseAppOpen.EVENT_ADS_EXHAUSTED,
+            RNWortiseAppOpen.EVENT_AD_PRELOADED,
             RNWortiseAppOpen.EVENT_CLICKED,
             RNWortiseAppOpen.EVENT_DISMISSED,
             RNWortiseAppOpen.EVENT_FAILED_TO_LOAD,
+            RNWortiseAppOpen.EVENT_FAILED_TO_PRELOAD,
             RNWortiseAppOpen.EVENT_FAILED_TO_SHOW,
             RNWortiseAppOpen.EVENT_IMPRESSION,
             RNWortiseAppOpen.EVENT_LOADED,
@@ -49,6 +55,27 @@ class RNWortiseAppOpen: RCTEventEmitter {
         DispatchQueue.main.async { [weak self] in
             self?.appOpenAd?.destroy()
             self?.appOpenAd = nil
+        }
+    }
+
+    @objc
+    func destroyAllPreloads() {
+        DispatchQueue.main.async {
+            WAAppOpenAdPreloader.destroyAll()
+        }
+    }
+
+    @objc(destroyPreload:resolve:reject:)
+    func destroyPreload(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            resolve(WAAppOpenAdPreloader.destroy(adUnitId: adUnitId))
+        }
+    }
+
+    @objc(getNumAdsAvailable:resolve:reject:)
+    func getNumAdsAvailable(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            resolve(WAAppOpenAdPreloader.numAdsAvailable(adUnitId: adUnitId))
         }
     }
 
@@ -80,6 +107,24 @@ class RNWortiseAppOpen: RCTEventEmitter {
             let parameters = WARequestParameters.from(requestParameters)
 
             self?.appOpenAd?.loadAd(parameters: parameters)
+        }
+    }
+
+    @objc(pollAd:resolve:reject:)
+    func pollAd(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+
+            guard let self = self, let ad = WAAppOpenAdPreloader.pollAd(adUnitId: adUnitId) else {
+                resolve(false)
+                return
+            }
+
+            self.appOpenAd?.destroy()
+
+            self.appOpenAd = ad
+            self.appOpenAd?.delegate = self
+
+            resolve(true)
         }
     }
 
@@ -118,6 +163,20 @@ class RNWortiseAppOpen: RCTEventEmitter {
             appOpenAd.showAd(from: controller)
 
             resolve(true)
+        }
+    }
+
+    @objc(startPreload:options:resolve:reject:)
+    func startPreload(_ adUnitId: String, options: NSDictionary?, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+
+            let started = WAAppOpenAdPreloader.start(
+                adUnitId:      adUnitId,
+                configuration: WAPreloadConfiguration.from(options),
+                delegate:      self
+            )
+
+            resolve(started)
         }
     }
 
@@ -170,5 +229,24 @@ extension RNWortiseAppOpen: WAAppOpenDelegate {
 
     func didShow(appOpenAd: WAAppOpenAd) {
         sendEvent(withName: RNWortiseAppOpen.EVENT_SHOWN, body: nil)
+    }
+}
+
+extension RNWortiseAppOpen: WAPreloadDelegate {
+
+    func didExhaustAds(adUnitId: String) {
+        sendEvent(withName: RNWortiseAppOpen.EVENT_ADS_EXHAUSTED, body: ["adUnitId": adUnitId])
+    }
+
+    func didFailToPreloadAd(adUnitId: String, error: WAAdError) {
+        var body = error.toMap()
+
+        body["adUnitId"] = adUnitId
+
+        sendEvent(withName: RNWortiseAppOpen.EVENT_FAILED_TO_PRELOAD, body: body)
+    }
+
+    func didPreloadAd(adUnitId: String) {
+        sendEvent(withName: RNWortiseAppOpen.EVENT_AD_PRELOADED, body: ["adUnitId": adUnitId])
     }
 }

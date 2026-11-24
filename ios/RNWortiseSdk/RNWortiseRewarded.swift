@@ -5,15 +5,18 @@ import WortiseSDK
 @objc(RNWortiseRewarded)
 class RNWortiseRewarded: RCTEventEmitter {
 
-    fileprivate static let EVENT_CLICKED        = "onRewardedClicked"
-    fileprivate static let EVENT_COMPLETED      = "onRewardedCompleted"
-    fileprivate static let EVENT_DISMISSED      = "onRewardedDismissed"
-    fileprivate static let EVENT_FAILED_TO_LOAD = "onRewardedFailedToLoad"
-    fileprivate static let EVENT_FAILED_TO_SHOW = "onRewardedFailedToShow"
-    fileprivate static let EVENT_IMPRESSION     = "onRewardedImpression"
-    fileprivate static let EVENT_LOADED         = "onRewardedLoaded"
-    fileprivate static let EVENT_REVENUE_PAID   = "onRewardedRevenuePaid"
-    fileprivate static let EVENT_SHOWN          = "onRewardedShown"
+    fileprivate static let EVENT_ADS_EXHAUSTED     = "onRewardedAdsExhausted"
+    fileprivate static let EVENT_AD_PRELOADED      = "onRewardedAdPreloaded"
+    fileprivate static let EVENT_CLICKED           = "onRewardedClicked"
+    fileprivate static let EVENT_COMPLETED         = "onRewardedCompleted"
+    fileprivate static let EVENT_DISMISSED         = "onRewardedDismissed"
+    fileprivate static let EVENT_FAILED_TO_LOAD    = "onRewardedFailedToLoad"
+    fileprivate static let EVENT_FAILED_TO_PRELOAD = "onRewardedFailedToPreload"
+    fileprivate static let EVENT_FAILED_TO_SHOW    = "onRewardedFailedToShow"
+    fileprivate static let EVENT_IMPRESSION        = "onRewardedImpression"
+    fileprivate static let EVENT_LOADED            = "onRewardedLoaded"
+    fileprivate static let EVENT_REVENUE_PAID      = "onRewardedRevenuePaid"
+    fileprivate static let EVENT_SHOWN             = "onRewardedShown"
 
 
     fileprivate var rewardedAd: WARewardedAd?
@@ -26,10 +29,13 @@ class RNWortiseRewarded: RCTEventEmitter {
 
     override func supportedEvents() -> [String]! {
         return [
+            RNWortiseRewarded.EVENT_ADS_EXHAUSTED,
+            RNWortiseRewarded.EVENT_AD_PRELOADED,
             RNWortiseRewarded.EVENT_CLICKED,
             RNWortiseRewarded.EVENT_COMPLETED,
             RNWortiseRewarded.EVENT_DISMISSED,
             RNWortiseRewarded.EVENT_FAILED_TO_LOAD,
+            RNWortiseRewarded.EVENT_FAILED_TO_PRELOAD,
             RNWortiseRewarded.EVENT_FAILED_TO_SHOW,
             RNWortiseRewarded.EVENT_IMPRESSION,
             RNWortiseRewarded.EVENT_LOADED,
@@ -51,6 +57,27 @@ class RNWortiseRewarded: RCTEventEmitter {
         DispatchQueue.main.async { [weak self] in
             self?.rewardedAd?.destroy()
             self?.rewardedAd = nil
+        }
+    }
+
+    @objc
+    func destroyAllPreloads() {
+        DispatchQueue.main.async {
+            WARewardedAdPreloader.destroyAll()
+        }
+    }
+
+    @objc(destroyPreload:resolve:reject:)
+    func destroyPreload(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            resolve(WARewardedAdPreloader.destroy(adUnitId: adUnitId))
+        }
+    }
+
+    @objc(getNumAdsAvailable:resolve:reject:)
+    func getNumAdsAvailable(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            resolve(WARewardedAdPreloader.numAdsAvailable(adUnitId: adUnitId))
         }
     }
 
@@ -85,6 +112,24 @@ class RNWortiseRewarded: RCTEventEmitter {
         }
     }
 
+    @objc(pollAd:resolve:reject:)
+    func pollAd(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+
+            guard let self = self, let ad = WARewardedAdPreloader.pollAd(adUnitId: adUnitId) else {
+                resolve(false)
+                return
+            }
+
+            self.rewardedAd?.destroy()
+
+            self.rewardedAd = ad
+            self.rewardedAd?.delegate = self
+
+            resolve(true)
+        }
+    }
+
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
         DispatchQueue.main.async { [weak self] in
@@ -113,6 +158,20 @@ class RNWortiseRewarded: RCTEventEmitter {
             rewardedAd.showAd(from: controller)
 
             resolve(true)
+        }
+    }
+
+    @objc(startPreload:options:resolve:reject:)
+    func startPreload(_ adUnitId: String, options: NSDictionary?, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+
+            let started = WARewardedAdPreloader.start(
+                adUnitId:      adUnitId,
+                configuration: WAPreloadConfiguration.from(options),
+                delegate:      self
+            )
+
+            resolve(started)
         }
     }
 }
@@ -159,5 +218,24 @@ extension RNWortiseRewarded: WARewardedDelegate {
 
     func didShow(rewardedAd: WARewardedAd) {
         sendEvent(withName: RNWortiseRewarded.EVENT_SHOWN, body: nil)
+    }
+}
+
+extension RNWortiseRewarded: WAPreloadDelegate {
+
+    func didExhaustAds(adUnitId: String) {
+        sendEvent(withName: RNWortiseRewarded.EVENT_ADS_EXHAUSTED, body: ["adUnitId": adUnitId])
+    }
+
+    func didFailToPreloadAd(adUnitId: String, error: WAAdError) {
+        var body = error.toMap()
+
+        body["adUnitId"] = adUnitId
+
+        sendEvent(withName: RNWortiseRewarded.EVENT_FAILED_TO_PRELOAD, body: body)
+    }
+
+    func didPreloadAd(adUnitId: String) {
+        sendEvent(withName: RNWortiseRewarded.EVENT_AD_PRELOADED, body: ["adUnitId": adUnitId])
     }
 }
