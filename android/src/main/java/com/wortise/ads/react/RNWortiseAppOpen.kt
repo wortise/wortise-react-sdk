@@ -13,6 +13,9 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.wortise.ads.AdError
 import com.wortise.ads.RevenueData
 import com.wortise.ads.appopen.AppOpenAd
+import com.wortise.ads.appopen.AppOpenAdPreloader
+import com.wortise.ads.preload.PreloadListener
+import com.wortise.ads.react.extensions.toPreloadConfiguration
 import com.wortise.ads.react.extensions.toRequestParameters
 import com.wortise.ads.react.extensions.toWritableMap
 
@@ -23,6 +26,25 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   }
 
   private var appOpenAd: AppOpenAd? = null
+
+  private val preloadListener = object : PreloadListener {
+
+    override fun onAdFailedToPreload(adUnitId: String, error: AdError) {
+      val params = error.toWritableMap().also {
+        it.putString("adUnitId", adUnitId)
+      }
+
+      sendEvent(EVENT_FAILED_TO_PRELOAD, params)
+    }
+
+    override fun onAdPreloaded(adUnitId: String) {
+      sendEvent(EVENT_AD_PRELOADED, adUnitIdMap(adUnitId))
+    }
+
+    override fun onAdsExhausted(adUnitId: String) {
+      sendEvent(EVENT_ADS_EXHAUSTED, adUnitIdMap(adUnitId))
+    }
+  }
 
 
   init {
@@ -47,6 +69,21 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   }
 
   @ReactMethod
+  fun destroyAllPreloads() {
+    AppOpenAdPreloader.destroyAll()
+  }
+
+  @ReactMethod
+  fun destroyPreload(adUnitId: String, promise: Promise) {
+    promise.resolve(AppOpenAdPreloader.destroy(adUnitId))
+  }
+
+  @ReactMethod
+  fun getNumAdsAvailable(adUnitId: String, promise: Promise) {
+    promise.resolve(AppOpenAdPreloader.getNumAdsAvailable(adUnitId))
+  }
+
+  @ReactMethod
   fun isAvailable(promise: Promise) {
     promise.resolve(appOpenAd?.isAvailable == true)
   }
@@ -66,6 +103,22 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
     val parameters = requestParameters.toRequestParameters()
 
     appOpenAd?.loadAd(parameters)
+  }
+
+  @ReactMethod
+  fun pollAd(adUnitId: String, promise: Promise) {
+    val ad = AppOpenAdPreloader.pollAd(adUnitId) ?: run {
+      promise.resolve(false)
+      return
+    }
+
+    destroy()
+
+    appOpenAd = ad.also {
+      it.listener = this
+    }
+
+    promise.resolve(true)
   }
 
   @ReactMethod
@@ -102,6 +155,18 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
   }
 
   @ReactMethod
+  fun startPreload(adUnitId: String, options: ReadableMap?, promise: Promise) {
+    val started = AppOpenAdPreloader.start(
+      context       = reactApplicationContext,
+      adUnitId      = adUnitId,
+      configuration = options.toPreloadConfiguration(),
+      listener      = preloadListener
+    )
+
+    promise.resolve(started)
+  }
+
+  @ReactMethod
   fun tryToShowAd(promise: Promise) {
     val appOpenAd = appOpenAd
 
@@ -117,6 +182,10 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
     promise.resolve(true)
   }
 
+
+  private fun adUnitIdMap(adUnitId: String) = Arguments.createMap().also {
+    it.putString("adUnitId", adUnitId)
+  }
 
   private fun sendEvent(eventName: String, params: WritableMap? = null) {
     eventEmitter.emit(eventName, params)
@@ -165,13 +234,16 @@ class RNWortiseAppOpen(reactContext: ReactApplicationContext) : ReactContextBase
 
 
   companion object {
-    const val EVENT_CLICKED        = "onAppOpenClicked"
-    const val EVENT_DISMISSED      = "onAppOpenDismissed"
-    const val EVENT_FAILED_TO_LOAD = "onAppOpenFailedToLoad"
-    const val EVENT_FAILED_TO_SHOW = "onAppOpenFailedToShow"
-    const val EVENT_IMPRESSION     = "onAppOpenImpression"
-    const val EVENT_LOADED         = "onAppOpenLoaded"
-    const val EVENT_REVENUE_PAID   = "onAppOpenRevenuePaid"
-    const val EVENT_SHOWN          = "onAppOpenShown"
+    const val EVENT_ADS_EXHAUSTED     = "onAppOpenAdsExhausted"
+    const val EVENT_AD_PRELOADED      = "onAppOpenAdPreloaded"
+    const val EVENT_CLICKED           = "onAppOpenClicked"
+    const val EVENT_DISMISSED         = "onAppOpenDismissed"
+    const val EVENT_FAILED_TO_LOAD    = "onAppOpenFailedToLoad"
+    const val EVENT_FAILED_TO_PRELOAD = "onAppOpenFailedToPreload"
+    const val EVENT_FAILED_TO_SHOW    = "onAppOpenFailedToShow"
+    const val EVENT_IMPRESSION        = "onAppOpenImpression"
+    const val EVENT_LOADED            = "onAppOpenLoaded"
+    const val EVENT_REVENUE_PAID      = "onAppOpenRevenuePaid"
+    const val EVENT_SHOWN             = "onAppOpenShown"
   }
 }

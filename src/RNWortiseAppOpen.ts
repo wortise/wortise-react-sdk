@@ -1,4 +1,5 @@
 import { EmitterSubscription, NativeEventEmitter, NativeModules } from 'react-native';
+import { WortisePreloadOptions } from './WortisePreloadOptions';
 import { WortiseRequestParameters } from './WortiseRequestParameters';
 import { WortiseRevenueData } from './WortiseRevenueData';
 
@@ -7,9 +8,12 @@ const { RNWortiseAppOpen } = NativeModules;
 const emitter = new NativeEventEmitter(RNWortiseAppOpen);
 
 type AppOpenEventMap = {
+  onAppOpenAdPreloaded: { adUnitId: string };
+  onAppOpenAdsExhausted: { adUnitId: string };
   onAppOpenClicked: null;
   onAppOpenDismissed: null;
   onAppOpenFailedToLoad: { message: string; name: string };
+  onAppOpenFailedToPreload: { adUnitId: string; message: string; name: string };
   onAppOpenFailedToShow: { message: string; name: string };
   onAppOpenImpression: null;
   onAppOpenLoaded: null;
@@ -47,8 +51,28 @@ export default {
     RNWortiseAppOpen.destroy();
   },
 
+  destroyAllPreloads() {
+    RNWortiseAppOpen.destroyAllPreloads();
+  },
+
+  destroyPreload(adUnitId: string): Promise<boolean> {
+    return RNWortiseAppOpen.destroyPreload(adUnitId);
+  },
+
+  getNumAdsAvailable(adUnitId: string): Promise<number> {
+    return RNWortiseAppOpen.getNumAdsAvailable(adUnitId);
+  },
+
+  async isAdAvailable(adUnitId: string): Promise<boolean> {
+    return (await RNWortiseAppOpen.getNumAdsAvailable(adUnitId)) > 0;
+  },
+
   loadAd(requestParameters?: WortiseRequestParameters) {
     RNWortiseAppOpen.loadAd(requestParameters ?? {});
+  },
+
+  pollAd(adUnitId: string): Promise<boolean> {
+    return RNWortiseAppOpen.pollAd(adUnitId);
   },
 
   removeAllListeners(eventType: AppOpenEvent) {
@@ -65,6 +89,10 @@ export default {
 
   showAd() {
     return RNWortiseAppOpen.showAd();
+  },
+
+  startPreload(adUnitId: string, options?: WortisePreloadOptions): Promise<boolean> {
+    return RNWortiseAppOpen.startPreload(adUnitId, options ?? {});
   },
 
   tryToShowAd() {

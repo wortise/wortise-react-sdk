@@ -13,6 +13,9 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.wortise.ads.AdError
 import com.wortise.ads.RevenueData
 import com.wortise.ads.interstitial.InterstitialAd
+import com.wortise.ads.interstitial.InterstitialAdPreloader
+import com.wortise.ads.preload.PreloadListener
+import com.wortise.ads.react.extensions.toPreloadConfiguration
 import com.wortise.ads.react.extensions.toRequestParameters
 import com.wortise.ads.react.extensions.toWritableMap
 
@@ -23,6 +26,25 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
   }
 
   private var interstitialAd: InterstitialAd? = null
+
+  private val preloadListener = object : PreloadListener {
+
+    override fun onAdFailedToPreload(adUnitId: String, error: AdError) {
+      val params = error.toWritableMap().also {
+        it.putString("adUnitId", adUnitId)
+      }
+
+      sendEvent(EVENT_FAILED_TO_PRELOAD, params)
+    }
+
+    override fun onAdPreloaded(adUnitId: String) {
+      sendEvent(EVENT_AD_PRELOADED, adUnitIdMap(adUnitId))
+    }
+
+    override fun onAdsExhausted(adUnitId: String) {
+      sendEvent(EVENT_ADS_EXHAUSTED, adUnitIdMap(adUnitId))
+    }
+  }
 
 
   init {
@@ -47,6 +69,21 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
   }
 
   @ReactMethod
+  fun destroyAllPreloads() {
+    InterstitialAdPreloader.destroyAll()
+  }
+
+  @ReactMethod
+  fun destroyPreload(adUnitId: String, promise: Promise) {
+    promise.resolve(InterstitialAdPreloader.destroy(adUnitId))
+  }
+
+  @ReactMethod
+  fun getNumAdsAvailable(adUnitId: String, promise: Promise) {
+    promise.resolve(InterstitialAdPreloader.getNumAdsAvailable(adUnitId))
+  }
+
+  @ReactMethod
   fun isAvailable(promise: Promise) {
     promise.resolve(interstitialAd?.isAvailable == true)
   }
@@ -66,6 +103,22 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
     val parameters = requestParameters.toRequestParameters()
 
     interstitialAd?.loadAd(parameters)
+  }
+
+  @ReactMethod
+  fun pollAd(adUnitId: String, promise: Promise) {
+    val ad = InterstitialAdPreloader.pollAd(adUnitId) ?: run {
+      promise.resolve(false)
+      return
+    }
+
+    destroy()
+
+    interstitialAd = ad.also {
+      it.listener = this
+    }
+
+    promise.resolve(true)
   }
 
   @ReactMethod
@@ -96,6 +149,22 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
     promise.resolve(true)
   }
 
+  @ReactMethod
+  fun startPreload(adUnitId: String, options: ReadableMap?, promise: Promise) {
+    val started = InterstitialAdPreloader.start(
+      context       = reactApplicationContext,
+      adUnitId      = adUnitId,
+      configuration = options.toPreloadConfiguration(),
+      listener      = preloadListener
+    )
+
+    promise.resolve(started)
+  }
+
+
+  private fun adUnitIdMap(adUnitId: String) = Arguments.createMap().also {
+    it.putString("adUnitId", adUnitId)
+  }
 
   private fun sendEvent(eventName: String, params: WritableMap? = null) {
     eventEmitter.emit(eventName, params)
@@ -144,13 +213,16 @@ class RNWortiseInterstitial(reactContext: ReactApplicationContext) : ReactContex
 
 
   companion object {
-    const val EVENT_CLICKED        = "onInterstitialClicked"
-    const val EVENT_DISMISSED      = "onInterstitialDismissed"
-    const val EVENT_FAILED_TO_LOAD = "onInterstitialFailedToLoad"
-    const val EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow"
-    const val EVENT_IMPRESSION     = "onInterstitialImpression"
-    const val EVENT_LOADED         = "onInterstitialLoaded"
-    const val EVENT_REVENUE_PAID   = "onInterstitialRevenuePaid"
-    const val EVENT_SHOWN          = "onInterstitialShown"
+    const val EVENT_ADS_EXHAUSTED     = "onInterstitialAdsExhausted"
+    const val EVENT_AD_PRELOADED      = "onInterstitialAdPreloaded"
+    const val EVENT_CLICKED           = "onInterstitialClicked"
+    const val EVENT_DISMISSED         = "onInterstitialDismissed"
+    const val EVENT_FAILED_TO_LOAD    = "onInterstitialFailedToLoad"
+    const val EVENT_FAILED_TO_PRELOAD = "onInterstitialFailedToPreload"
+    const val EVENT_FAILED_TO_SHOW    = "onInterstitialFailedToShow"
+    const val EVENT_IMPRESSION        = "onInterstitialImpression"
+    const val EVENT_LOADED            = "onInterstitialLoaded"
+    const val EVENT_REVENUE_PAID      = "onInterstitialRevenuePaid"
+    const val EVENT_SHOWN             = "onInterstitialShown"
   }
 }

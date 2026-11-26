@@ -42,6 +42,8 @@ export type {
 
 export type { WortiseNativeAdViewProps } from './WortiseNativeAdView';
 
+export type { WortisePreloadOptions } from './WortisePreloadOptions';
+
 export type { WortiseRequestParameters } from './WortiseRequestParameters';
 
 export type { WortiseRevenueData } from './WortiseRevenueData';

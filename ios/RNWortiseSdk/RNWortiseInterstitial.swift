@@ -5,14 +5,17 @@ import WortiseSDK
 @objc(RNWortiseInterstitial)
 class RNWortiseInterstitial: RCTEventEmitter {
 
-    fileprivate static let EVENT_CLICKED        = "onInterstitialClicked"
-    fileprivate static let EVENT_DISMISSED      = "onInterstitialDismissed"
-    fileprivate static let EVENT_FAILED_TO_LOAD = "onInterstitialFailedToLoad"
-    fileprivate static let EVENT_FAILED_TO_SHOW = "onInterstitialFailedToShow"
-    fileprivate static let EVENT_IMPRESSION     = "onInterstitialImpression"
-    fileprivate static let EVENT_LOADED         = "onInterstitialLoaded"
-    fileprivate static let EVENT_REVENUE_PAID   = "onInterstitialRevenuePaid"
-    fileprivate static let EVENT_SHOWN          = "onInterstitialShown"
+    fileprivate static let EVENT_ADS_EXHAUSTED     = "onInterstitialAdsExhausted"
+    fileprivate static let EVENT_AD_PRELOADED      = "onInterstitialAdPreloaded"
+    fileprivate static let EVENT_CLICKED           = "onInterstitialClicked"
+    fileprivate static let EVENT_DISMISSED         = "onInterstitialDismissed"
+    fileprivate static let EVENT_FAILED_TO_LOAD    = "onInterstitialFailedToLoad"
+    fileprivate static let EVENT_FAILED_TO_PRELOAD = "onInterstitialFailedToPreload"
+    fileprivate static let EVENT_FAILED_TO_SHOW    = "onInterstitialFailedToShow"
+    fileprivate static let EVENT_IMPRESSION        = "onInterstitialImpression"
+    fileprivate static let EVENT_LOADED            = "onInterstitialLoaded"
+    fileprivate static let EVENT_REVENUE_PAID      = "onInterstitialRevenuePaid"
+    fileprivate static let EVENT_SHOWN             = "onInterstitialShown"
 
 
     fileprivate var interstitialAd: WAInterstitialAd?
@@ -25,9 +28,12 @@ class RNWortiseInterstitial: RCTEventEmitter {
 
     override func supportedEvents() -> [String]! {
         return [
+            RNWortiseInterstitial.EVENT_ADS_EXHAUSTED,
+            RNWortiseInterstitial.EVENT_AD_PRELOADED,
             RNWortiseInterstitial.EVENT_CLICKED,
             RNWortiseInterstitial.EVENT_DISMISSED,
             RNWortiseInterstitial.EVENT_FAILED_TO_LOAD,
+            RNWortiseInterstitial.EVENT_FAILED_TO_PRELOAD,
             RNWortiseInterstitial.EVENT_FAILED_TO_SHOW,
             RNWortiseInterstitial.EVENT_IMPRESSION,
             RNWortiseInterstitial.EVENT_LOADED,
@@ -50,6 +56,27 @@ class RNWortiseInterstitial: RCTEventEmitter {
         DispatchQueue.main.async { [weak self] in
             self?.interstitialAd?.destroy()
             self?.interstitialAd = nil
+        }
+    }
+
+    @objc
+    func destroyAllPreloads() {
+        DispatchQueue.main.async {
+            WAInterstitialAdPreloader.destroyAll()
+        }
+    }
+
+    @objc(destroyPreload:resolve:reject:)
+    func destroyPreload(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            resolve(WAInterstitialAdPreloader.destroy(adUnitId: adUnitId))
+        }
+    }
+
+    @objc(getNumAdsAvailable:resolve:reject:)
+    func getNumAdsAvailable(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async {
+            resolve(WAInterstitialAdPreloader.numAdsAvailable(adUnitId: adUnitId))
         }
     }
 
@@ -84,6 +111,24 @@ class RNWortiseInterstitial: RCTEventEmitter {
         }
     }
 
+    @objc(pollAd:resolve:reject:)
+    func pollAd(_ adUnitId: String, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+
+            guard let self = self, let ad = WAInterstitialAdPreloader.pollAd(adUnitId: adUnitId) else {
+                resolve(false)
+                return
+            }
+
+            self.interstitialAd?.destroy()
+
+            self.interstitialAd = ad
+            self.interstitialAd?.delegate = self
+
+            resolve(true)
+        }
+    }
+
     @objc(setAdUnitId:)
     func setAdUnitId(_ adUnitId: String) {
         DispatchQueue.main.async { [weak self] in
@@ -112,6 +157,20 @@ class RNWortiseInterstitial: RCTEventEmitter {
             interstitialAd.showAd(from: controller)
 
             resolve(true)
+        }
+    }
+
+    @objc(startPreload:options:resolve:reject:)
+    func startPreload(_ adUnitId: String, options: NSDictionary?, resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        DispatchQueue.main.async { [weak self] in
+
+            let started = WAInterstitialAdPreloader.start(
+                adUnitId:      adUnitId,
+                configuration: WAPreloadConfiguration.from(options),
+                delegate:      self
+            )
+
+            resolve(started)
         }
     }
 }
@@ -148,5 +207,24 @@ extension RNWortiseInterstitial: WAInterstitialDelegate {
 
     func didShow(interstitialAd: WAInterstitialAd) {
         sendEvent(withName: RNWortiseInterstitial.EVENT_SHOWN, body: nil)
+    }
+}
+
+extension RNWortiseInterstitial: WAPreloadDelegate {
+
+    func didExhaustAds(adUnitId: String) {
+        sendEvent(withName: RNWortiseInterstitial.EVENT_ADS_EXHAUSTED, body: ["adUnitId": adUnitId])
+    }
+
+    func didFailToPreloadAd(adUnitId: String, error: WAAdError) {
+        var body = error.toMap()
+
+        body["adUnitId"] = adUnitId
+
+        sendEvent(withName: RNWortiseInterstitial.EVENT_FAILED_TO_PRELOAD, body: body)
+    }
+
+    func didPreloadAd(adUnitId: String) {
+        sendEvent(withName: RNWortiseInterstitial.EVENT_AD_PRELOADED, body: ["adUnitId": adUnitId])
     }
 }

@@ -36,6 +36,16 @@ RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(destroy)
 
+RCT_EXTERN_METHOD(destroyAllPreloads)
+
+RCT_EXTERN_METHOD(destroyPreload:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(getNumAdsAvailable:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(loadAd:(NSDictionary *)requestParameters)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
@@ -47,6 +57,10 @@ RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(pollAd:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(setAdUnitId:(NSString *)adUnitId)
 
 RCT_EXTERN_METHOD(setAutoReload:(BOOL)autoReload)
@@ -55,6 +69,11 @@ RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(tryToShowAd:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(startPreload:(NSString *)adUnitId
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 @end
@@ -132,6 +151,16 @@ RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(destroy)
 
+RCT_EXTERN_METHOD(destroyAllPreloads)
+
+RCT_EXTERN_METHOD(destroyPreload:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(getNumAdsAvailable:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(loadAd:(NSDictionary *)requestParameters)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
@@ -143,9 +172,18 @@ RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(pollAd:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(setAdUnitId:(NSString *)adUnitId)
 
 RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(startPreload:(NSString *)adUnitId
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 @end
@@ -157,6 +195,16 @@ RCT_EXTERN_METHOD(cooldownRemainingMs:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(destroy)
 
+RCT_EXTERN_METHOD(destroyAllPreloads)
+
+RCT_EXTERN_METHOD(destroyPreload:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(getNumAdsAvailable:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(loadAd:(NSDictionary *)requestParameters)
 
 RCT_EXTERN_METHOD(isAvailable:(RCTPromiseResolveBlock)resolve
@@ -168,9 +216,18 @@ RCT_EXTERN_METHOD(isInCooldown:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(isShowing:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(pollAd:(NSString *)adUnitId
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(setAdUnitId:(NSString *)adUnitId)
 
 RCT_EXTERN_METHOD(showAd:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(startPreload:(NSString *)adUnitId
+                  options:(NSDictionary *)options
+                  resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject)
 
 @end
